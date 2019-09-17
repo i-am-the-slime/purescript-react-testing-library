@@ -1,0 +1,22 @@
+{
+  "editor.formatOnSave": true,
+  "regreplace.commands": [
+    {
+      "name": "replace double colon with unicode version",
+      "match": "\\.purs?$",
+      "regexp": " ::(\\s)",
+      "global": true,
+      "replace": " ∷$1"
+    },
+    {
+      "name": "replace forall with unicode version",
+      "match": "\\.purs?$",
+      "regexp": "forall",
+      "global": true,
+      "replace": "∀"
+    },
+  ],
+  "files.exclude": {
+    "**/.history": true
+  }
+}
