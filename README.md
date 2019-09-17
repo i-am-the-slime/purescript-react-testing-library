@@ -2,6 +2,11 @@
 
 This are purescript wrappers for [react-testing-library](https://github.com/testing-library/react-testing-library).
 
+## First install the node packages
+```
+npm install --save @testing-library/react jsdom jsdom-global
+```
+
 ## Example
 
 ```purescript
