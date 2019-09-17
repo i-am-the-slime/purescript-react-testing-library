@@ -118,7 +118,7 @@ type RenderQueriesJS
     , findByDisplayValue ∷ Fn1 Foreign (Promise HTMLElement)
     , findAllByDisplayValue ∷ Fn1 Foreign (Promise (Array HTMLElement))
     , findByRole ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllRole ∷ Fn1 Foreign (Promise (Array HTMLElement))
+    , findAllByRole ∷ Fn1 Foreign (Promise (Array HTMLElement))
     }
 
 type RenderQueries
@@ -156,15 +156,15 @@ toRenderQueries rq =
   , findByTestId: map unsafeCoerce runToAff1 rq.findByTestId
   , findAllByTestId: map unsafeCoerce runToAff1 rq.findAllByTestId
   , findByAltText: map unsafeCoerce runToAff1 rq.findByAltText
-  , findAllByAltText: map unsafeCoerce runToAff1 rq.findByTestId
-  , findByText: map unsafeCoerce runToAff1 rq.findByTestId
-  , findAllByText: map unsafeCoerce runToAff1 rq.findByTestId
-  , findByTitle: map unsafeCoerce runToAff1 rq.findByTestId
-  , findAllByTitle: map unsafeCoerce runToAff1 rq.findByTestId
-  , findByDisplayValue: map unsafeCoerce runToAff1 rq.findByTestId
-  , findAllByDisplayValue: map unsafeCoerce runToAff1 rq.findByTestId
-  , findByRole: map unsafeCoerce runToAff1 rq.findByTestId
-  , findAllByRole: map unsafeCoerce runToAff1 rq.findByTestId
+  , findAllByAltText: map unsafeCoerce runToAff1 rq.findAllByAltText
+  , findByText: map unsafeCoerce runToAff1 rq.findByText
+  , findAllByText: map unsafeCoerce runToAff1 rq.findAllByText
+  , findByTitle: map unsafeCoerce runToAff1 rq.findByTitle
+  , findAllByTitle: map unsafeCoerce runToAff1 rq.findAllByTitle
+  , findByDisplayValue: map unsafeCoerce runToAff1 rq.findByDisplayValue
+  , findAllByDisplayValue: map unsafeCoerce runToAff1 rq.findAllByDisplayValue
+  , findByRole: map unsafeCoerce runToAff1 rq.findByRole
+  , findAllByRole: map unsafeCoerce runToAff1 rq.findAllByRole
   }
 
 foreign import renderImpl ∷ EffectFn1 JSX RenderQueriesJS
