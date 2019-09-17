@@ -128,13 +128,13 @@ type RenderQueries
     , findAllByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
     , findByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findAllByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByText ∷ ∀ tm. TextMatch tm => Aff HTMLElement
+    , findByText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findAllByText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByTitle ∷ ∀ tm. TextMatch tm => Aff HTMLElement
+    , findByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findAllByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByDisplayValue ∷ ∀ tm. TextMatch tm => Aff HTMLElement
+    , findByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByRole ∷ ∀ tm. TextMatch tm => Aff HTMLElement
+    , findByRole ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
     }
 
