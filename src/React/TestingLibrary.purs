@@ -3,6 +3,7 @@ module React.TestingLibrary
   , class TextMatch
   , defaultKeyboardEvent
   , FakeKeyboardEvent
+  , findByText
   , fireEvent
   , fireEventAbort
   , fireEventAnimationEnd
@@ -41,6 +42,7 @@ module React.TestingLibrary
   , fireEventInput
   , fireEventInvalid
   , fireEventKeyDown
+  , fireEventKeyPress
   , fireEventKeyUp
   , fireEventLoad
   , fireEventLoadedData
@@ -90,6 +92,7 @@ module React.TestingLibrary
   ) where
 
 import Prelude
+
 import Control.Promise (Promise, toAff)
 import Data.Function.Uncurried (Fn1, Fn2, runFn1, runFn2)
 import Data.String.Regex (Regex)
@@ -119,6 +122,8 @@ type RenderQueriesJS
     , findAllByDisplayValue ∷ Fn1 Foreign (Promise (Array HTMLElement))
     , findByRole ∷ Fn1 Foreign (Promise HTMLElement)
     , findAllByRole ∷ Fn1 Foreign (Promise (Array HTMLElement))
+    , findByPlaceholderText ∷ Fn1 Foreign (Promise HTMLElement)
+    , findAllByPlaceholderText ∷ Fn1 Foreign (Promise (Array HTMLElement))
     }
 
 type RenderQueries
@@ -136,6 +141,8 @@ type RenderQueries
     , findAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
     , findByRole ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+    , findByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+    , findAllByPlaceholderText  ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
     }
 
 foreign import cleanupImpl ∷ Effect Unit
@@ -152,7 +159,7 @@ runToAff2 = (map >>> map) toAff <$> runFn2
 toRenderQueries ∷ RenderQueriesJS -> RenderQueries
 toRenderQueries rq =
   { findByLabelText: map unsafeCoerce runToAff1 rq.findByLabelText
-  , findAllByLabelText: map unsafeCoerce runToAff1 rq.findByLabelText
+  , findAllByLabelText: map unsafeCoerce runToAff1 rq.findAllByLabelText
   , findByTestId: map unsafeCoerce runToAff1 rq.findByTestId
   , findAllByTestId: map unsafeCoerce runToAff1 rq.findAllByTestId
   , findByAltText: map unsafeCoerce runToAff1 rq.findByAltText
@@ -165,6 +172,8 @@ toRenderQueries rq =
   , findAllByDisplayValue: map unsafeCoerce runToAff1 rq.findAllByDisplayValue
   , findByRole: map unsafeCoerce runToAff1 rq.findByRole
   , findAllByRole: map unsafeCoerce runToAff1 rq.findAllByRole
+  , findByPlaceholderText: map unsafeCoerce runToAff1 rq.findByPlaceholderText
+  , findAllByPlaceholderText: map unsafeCoerce runToAff1 rq.findAllByPlaceholderText
   }
 
 foreign import renderImpl ∷ EffectFn1 JSX RenderQueriesJS
@@ -175,6 +184,11 @@ render jsx = liftRunEffectFn1 renderImpl jsx <#> toRenderQueries
 
 renderComponent ∷ ∀ m p. MonadEffect m => ReactComponent { | p } -> { | p } -> m RenderQueries
 renderComponent component props = element component props # render
+
+foreign import findByTextImpl ∷ Fn2 HTMLElement String (Promise HTMLElement)
+
+findByText ∷ HTMLElement -> String -> Aff HTMLElement
+findByText el str = toAff (runFn2 findByTextImpl el str)
 
 foreign import fireEventImpl ∷ EffectFn2 HTMLElement Event Unit
 
@@ -248,6 +262,11 @@ foreign import fireEventKeyUpImpl ∷ EffectFn2 HTMLElement FakeKeyboardEvent Un
 fireEventKeyUp ∷ ∀ m. MonadEffect m => FakeKeyboardEvent -> HTMLElement -> m Unit
 fireEventKeyUp = flip $ liftRunEffectFn2 fireEventKeyUpImpl
 
+foreign import fireEventKeyPressImpl ∷ EffectFn2 HTMLElement FakeKeyboardEvent Unit
+
+fireEventKeyPress ∷ ∀ m. MonadEffect m => FakeKeyboardEvent -> HTMLElement -> m Unit
+fireEventKeyPress = flip $ liftRunEffectFn2 fireEventKeyDownImpl
+
 foreign import fireEventFocusImpl ∷ EffectFn1 HTMLElement Unit
 
 fireEventFocus ∷ ∀ m. MonadEffect m => HTMLElement -> m Unit
@@ -270,8 +289,8 @@ fireEventFocusOut = liftRunEffectFn1 fireEventFocusOutImpl
 
 foreign import fireEventChangeImpl ∷ EffectFn2 HTMLElement Foreign Unit
 
-fireEventChange ∷ ∀ m. MonadEffect m => HTMLElement -> Foreign -> m Unit
-fireEventChange = liftRunEffectFn2 fireEventChangeImpl
+fireEventChange ∷ ∀ r m. MonadEffect m => { | r } -> HTMLElement -> m Unit
+fireEventChange ev = flip (liftRunEffectFn2 fireEventChangeImpl) (unsafeToForeign ev)
 
 foreign import fireEventInputImpl ∷ EffectFn2 HTMLElement Foreign Unit
 

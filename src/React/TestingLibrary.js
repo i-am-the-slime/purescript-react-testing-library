@@ -3,12 +3,15 @@
 // We're not using jest or any other compatible framework
 require("@testing-library/react/dont-cleanup-after-each");
 // So that we have a "document"
-require("jsdom-global")();
+require("jsdom-global")(undefined, { url: "https://bier.de"});
 var T = require("@testing-library/react");
 
+T.configure({defaultHidden: true})
 exports.cleanupImpl = T.cleanup;
 
 exports.renderImpl = T.render;
+
+exports.findByTextImpl = T.findByText;
 
 exports.fireEventImpl = T.fireEvent;
 exports.fireEventCopyImpl = T.fireEvent.copy;
@@ -19,11 +22,15 @@ exports.fireEventCompositionStartImpl = T.fireEvent.compositionStart;
 exports.fireEventCompositionUpdateImpl = T.fireEvent.compositionUpdate;
 exports.fireEventKeyDownImpl = T.fireEvent.keyDown;
 exports.fireEventKeyUpImpl = T.fireEvent.keyUp;
+exports.fireEventKeyPressImpl = T.fireEvent.keyPress;
 exports.fireEventFocusImpl = T.fireEvent.focus;
 exports.fireEventBlurImpl = T.fireEvent.blur;
 exports.fireEventFocusInImpl = T.fireEvent.focusIn;
 exports.fireEventFocusOutImpl = T.fireEvent.focusOut;
-exports.fireEventChangeImpl = T.fireEvent.change;
+exports.fireEventChangeImpl = function(shit, shat) {
+  console.log("Shithsaht", shat)
+  T.fireEvent.change(shit, shat)
+}
 exports.fireEventInputImpl = T.fireEvent.input;
 exports.fireEventInvalidImpl = T.fireEvent.invalid;
 exports.fireEventSubmitImpl = T.fireEvent.submit;
