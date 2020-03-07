@@ -2,6 +2,7 @@ module React.TestingLibrary
   ( cleanup
   , class TextMatch
   , defaultKeyboardEvent
+  , describeComponent
   , FakeKeyboardEvent
   , findByText
   , fireEvent
