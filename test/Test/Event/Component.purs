@@ -20,6 +20,7 @@ mkEventElem ∷
   IsSymbol on =>
   Lacks "key" props =>
   Lacks "ref" props =>
+  Lacks "children" props =>
   (Record r -> JSX) ->
   SProxy on ->
   EventFn SyntheticEvent eventFn ->
@@ -34,7 +35,6 @@ mkEventElem elem onWhat eventFn theHandler =
       { _data: fromHomogeneous { testid: "event-component" }
       , style: css { width: "10px", height: "10px" }
       }
-
   attrs =
     RB.insert onWhat
       ( handler eventFn (launchAff_ <<< theHandler)
@@ -49,7 +49,6 @@ mkEventImg onWhat eventFn theHandler =
       { alt: "event-component"
       , tabIndex: 0 -- for key events
       }
-
   attrs =
     RB.insert onWhat
       ( handler eventFn (launchAff_ <<< theHandler)
@@ -66,7 +65,6 @@ mkEventInput onWhat eventFn theHandler =
         , R.label { htmlFor: "input-id", children: [ R.text "Input Label" ] }
         ]
       }
-
   attrs =
     RB.insert onWhat
       ( handler eventFn (launchAff_ <<< theHandler)

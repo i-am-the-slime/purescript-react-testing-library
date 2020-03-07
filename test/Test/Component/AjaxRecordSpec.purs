@@ -5,6 +5,7 @@ import Data.Maybe (Maybe(..))
 import Effect.Aff (Milliseconds(..), delay)
 import Effect.Class (liftEffect)
 import React.Basic (createContext, element)
+import React.Basic.Hooks (reactChildrenFromArray)
 import React.TestingLibrary (cleanup, fireEventClick, fireEventInput, renderComponent)
 import Test.Component.AjaxRecord (Ctx, mkAjaxRecord, mkProvider)
 import Test.Spec (Spec, after_, before, describe, it)
@@ -28,7 +29,7 @@ spec =
           provider <- mkProvider ctx mock
           ajaxRecord <- mkAjaxRecord ctx
           let
-            children = [ element ajaxRecord {} ]
+            children = reactChildrenFromArray [ element ajaxRecord {} ]
           renderComponent provider { children }
       input <- findByLabelText "User to lookup"
       button <- findByLabelText "Get User"

@@ -1,8 +1,8 @@
 module Test.Component.AjaxSimple where
 
 import Prelude
-import Data.Foldable (for_)
-import Data.Maybe (Maybe(..), maybe)
+import Data.Foldable (foldMap, for_)
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (Aff, launchAff_)
 import Effect.Class (liftEffect)
@@ -36,7 +36,7 @@ mkAjaxSimple getUserId = do
                 [ R.text "Get User" ]
               }
           , maybeUserId
-              # maybe mempty \userId ->
+              # foldMap \userId ->
                   R.div
                     { _data: Object.singleton "testid" "userId"
                     , children: [ R.text (show userId) ]

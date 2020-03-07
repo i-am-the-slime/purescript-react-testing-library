@@ -12,7 +12,7 @@ import Network.RemoteData as RD
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler, handler_)
-import React.Basic.Hooks (JSX, ReactComponent, ReactContext, component, fragment, provider, useContext, useState, (/\))
+import React.Basic.Hooks (JSX, ReactChildren, ReactComponent, ReactContext, component, componentWithChildren, fragment, provider, reactChildrenToArray, useContext, useState, (/\))
 import React.Basic.Hooks as React
 
 type Ctx
@@ -21,10 +21,10 @@ type Ctx
 mkProvider ∷
   ReactContext Ctx ->
   Ctx ->
-  Effect (ReactComponent { children ∷ Array JSX })
+  Effect (ReactComponent { children ∷ ReactChildren JSX })
 mkProvider context interpreter = do
-  component "Provider" \{ children } -> React.do
-    pure $ provider context interpreter children
+  componentWithChildren "Provider" \{ children } -> React.do
+    pure $ provider context interpreter (reactChildrenToArray children)
 
 mkAjaxRecord ∷ ReactContext Ctx -> Effect (ReactComponent {})
 mkAjaxRecord ctx = do

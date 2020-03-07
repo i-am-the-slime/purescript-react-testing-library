@@ -92,9 +92,9 @@ module React.TestingLibrary
   ) where
 
 import Prelude
-
 import Control.Promise (Promise, toAff)
 import Data.Function.Uncurried (Fn1, Fn2, runFn1, runFn2)
+import Data.Identity (Identity(..))
 import Data.String.Regex (Regex)
 import Effect (Effect)
 import Effect.Aff (Aff)
@@ -103,6 +103,7 @@ import Effect.Uncurried (EffectFn1, EffectFn2, runEffectFn1, runEffectFn2)
 import Foreign (Foreign, unsafeToForeign)
 import Prim.TypeError (class Fail, Text)
 import React.Basic (JSX, ReactComponent, element)
+import Test.Spec (Spec, SpecT(..), after_, before, describe)
 import Unsafe.Coerce (unsafeCoerce)
 import Web.Event.Internal.Types (Event)
 import Web.HTML (HTMLElement)
@@ -142,13 +143,29 @@ type RenderQueries
     , findByRole ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
     , findByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByPlaceholderText  ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+    , findAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
     }
 
 foreign import cleanupImpl ∷ Effect Unit
 
 cleanup ∷ ∀ m. MonadEffect m => m Unit
 cleanup = liftEffect cleanupImpl
+
+--| Example use:
+--| ```purescript
+--| spec = describeComponent mkMyComponent "My Component" do
+--|  it "renders" \myComponent ->
+--|    { findByText } <- renderComponent myComponent { someProp: "test text"} 
+--|    result <- findByText "test text"
+--|    result `textContentShouldEqual` "I am rendering test text"
+--| ```
+describeComponent ∷
+  ∀ props.
+  (Effect (ReactComponent props)) ->
+  String ->
+  SpecT Aff (ReactComponent props) Identity Unit ->
+  Spec Unit
+describeComponent setup description test = after_ cleanup (before (liftEffect setup) (describe description test))
 
 runToAff1 ∷ ∀ a b. (a -> Promise b) -> a -> Aff b
 runToAff1 = map toAff <$> runFn1

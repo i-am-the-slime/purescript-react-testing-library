@@ -13,7 +13,7 @@ import Foreign.Object (fromHomogeneous)
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler, handler_)
-import React.Basic.Hooks (JSX, ReactComponent, ReactContext, component, fragment, provider, useContext, useState, (/\))
+import React.Basic.Hooks (JSX, ReactChildren, ReactComponent, ReactContext, component, componentWithChildren, fragment, provider, reactChildrenToArray, useContext, useState, (/\))
 import React.Basic.Hooks as React
 import Run (Run, case_, interpret, on)
 import Run as Run
@@ -24,10 +24,10 @@ newtype Ctx
 mkProvider ∷
   ReactContext Ctx ->
   Ctx ->
-  Effect (ReactComponent { children ∷ Array JSX })
+  Effect (ReactComponent { children ∷ ReactChildren JSX })
 mkProvider context interpreter = do
-  component "Provider" \{ children } -> React.do
-    pure $ provider context interpreter children
+  componentWithChildren "Provider" \{ children } -> React.do
+    pure $ provider context interpreter (reactChildrenToArray children)
 
 mkAjaxRun ∷ ReactContext Ctx -> Effect (ReactComponent {})
 mkAjaxRun ctx = do
@@ -76,7 +76,6 @@ data LogF a
   = Log String a
 
 derive instance functorLogF ∷ Functor LogF
-
 type LOG
   = FProxy LogF
 
@@ -89,7 +88,6 @@ data GetUserF a
   = GetUser Int (Maybe String -> a)
 
 derive instance functorGetUserF ∷ Functor GetUserF
-
 type GET_USER
   = FProxy GetUserF
 

@@ -5,6 +5,7 @@ import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff, Milliseconds(..), delay)
 import Effect.Class (liftEffect)
 import React.Basic (createContext, element)
+import React.Basic.Hooks (reactChildrenFromArray)
 import React.TestingLibrary (cleanup, fireEventClick, fireEventInput, renderComponent)
 import Run (Run, case_, interpret, on)
 import Test.Component.AjaxRun (GET_USER, GetUserF(..), Ctx(..), _getUser, mkAjaxRun, mkProvider)
@@ -31,7 +32,7 @@ spec =
             ctx <- createContext (Ctx interpretMock)
             provider <- mkProvider ctx (Ctx interpretMock)
             ajaxRun <- mkAjaxRun ctx
-            renderComponent provider { children: [ element ajaxRun {} ] }
+            renderComponent provider { children: reactChildrenFromArray [ element ajaxRun {} ] }
         input <- findByLabelText "User to lookup"
         button <- findByLabelText "Get User"
         fireEventInput input "1"
