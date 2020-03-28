@@ -90,12 +90,14 @@ module React.TestingLibrary
   , render
   , renderComponent
   , RenderQueries
+  , typeText
   ) where
 
 import Prelude
 import Control.Monad.Fork.Class (class MonadBracket)
 import Control.Promise (Promise, toAff)
-import Data.Function.Uncurried (Fn1, Fn2, runFn1, runFn2)
+import Control.Promise as Promise
+import Data.Function.Uncurried (Fn1, Fn2, Fn3, runFn1, runFn2, runFn3)
 import Data.Identity (Identity)
 import Data.String.Regex (Regex)
 import Effect (Effect)
@@ -652,6 +654,12 @@ liftRunEffectFn1 = (map >>> map) liftEffect runEffectFn1
 
 liftRunEffectFn2 ∷ ∀ m a b c. MonadEffect m => EffectFn2 a b c -> a -> b -> m c
 liftRunEffectFn2 = (map >>> map >>> map) liftEffect runEffectFn2
+
+-- | User Events
+foreign import typeImpl ∷ Fn3 HTMLElement String Foreign (Promise Unit)
+
+typeText ∷ String -> HTMLElement -> Aff Unit
+typeText text el = Promise.toAff $ runFn3 typeImpl el text (unsafeToForeign {})
 
 -- | To be used for most of the getBy/findBy etc functions
 class TextMatch a

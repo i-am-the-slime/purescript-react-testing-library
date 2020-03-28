@@ -26,13 +26,14 @@
   },
   "homepage": "https://github.com/i-am-the-slime/purescript-react-testing-library#readme",
   "dependencies": {
-    "@testing-library/react": "^9.0.0",
+    "@testing-library/react": "^9.5.0",
     "jsdom": "^16.2.1",
     "jsdom-global": "^3.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
+    "@testing-library/user-event": "^10.0.1",
     "purescript": "^0.13.6",
     "spago": "^0.14.0"
   }

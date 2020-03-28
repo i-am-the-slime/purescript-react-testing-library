@@ -5,6 +5,7 @@ require("@testing-library/react/dont-cleanup-after-each");
 // So that we have a "document"
 require("jsdom-global")(undefined, { url: "https://bier.de" });
 var T = require("@testing-library/react/pure");
+var UE = require("@testing-library/user-event");
 
 T.configure({ defaultHidden: true });
 exports.cleanupImpl = T.cleanup;
@@ -95,3 +96,5 @@ exports.fireEventPointerOutImpl = T.fireEvent.pointerOut;
 exports.fireEventPointerLeaveImpl = T.fireEvent.pointerLeave;
 exports.fireEventGotPointerCaptureImpl = T.fireEvent.gotPointerCapture;
 exports.fireEventLostPointerCaptureImpl = T.fireEvent.lostPointerCapture;
+
+exports.typeImpl = UE.default.type;
