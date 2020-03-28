@@ -2,29 +2,24 @@ module Test.Event.EventsSpec where
 
 import Prelude
 import Data.Either (Either(..))
+import Data.List.NonEmpty (NonEmptyList)
 import Data.Maybe (Maybe(..))
 import Data.Semigroup.Foldable (intercalateMap)
-import Data.Symbol (class IsSymbol, SProxy, reflectSymbol)
-import Effect (Effect)
+import Data.Symbol (reflectSymbol)
+import Effect.AVar (AVar)
 import Effect.Aff (Aff)
 import Effect.Aff.AVar as AVar
 import Effect.Class (liftEffect)
-import Effect.Uncurried (EffectFn1)
 import Foreign (ForeignError(..), MultipleErrors, unsafeToForeign)
-import Foreign.Object (Object)
-import React.Basic (JSX, ReactComponent)
-import React.Basic.DOM (CSS)
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (compositionData)
-import React.Basic.Events (SyntheticEvent, syntheticEvent)
-import React.TestingLibrary (RenderQueries, cleanup, defaultKeyboardEvent, fireEventAnimationEnd, fireEventAnimationIteration, fireEventAnimationStart, fireEventBlur, fireEventCanPlay, fireEventCanPlayThrough, fireEventClick, fireEventCompositionEnd, fireEventCompositionStart, fireEventCompositionUpdate, fireEventContextMenu, fireEventCopy, fireEventCut, fireEventDrag, fireEventDragEnd, fireEventDragEnter, fireEventDragExit, fireEventDragLeave, fireEventDragOver, fireEventDragStart, fireEventDrop, fireEventEmptied, fireEventEnded, fireEventFocus, fireEventInvalid, fireEventKeyDown, fireEventKeyUp, fireEventLoad, fireEventLoadedMetadata, fireEventMouseDown, fireEventMouseEnter, fireEventMouseLeave, fireEventMouseMove, fireEventMouseOut, fireEventMouseOver, fireEventMouseUp, fireEventPaste, fireEventPause, fireEventPlaying, fireEventPointerCancel, fireEventPointerDown, fireEventPointerMove, fireEventPointerOut, fireEventPointerOver, fireEventPointerUp, fireEventRateChange, fireEventSeeked, fireEventSelect, fireEventSubmit, fireEventSuspend, fireEventTouchCancel, fireEventTouchEnd, fireEventTouchMove, fireEventTouchStart, fireEventTransitionEnd, fireEventVolumeChange, fireEventWheel, renderComponent)
+import React.Basic.Events (syntheticEvent)
+import React.TestingLibrary (cleanup, defaultKeyboardEvent, fireEventAnimationEnd, fireEventAnimationIteration, fireEventAnimationStart, fireEventBlur, fireEventCanPlay, fireEventCanPlayThrough, fireEventClick, fireEventCompositionEnd, fireEventCompositionStart, fireEventCompositionUpdate, fireEventContextMenu, fireEventCopy, fireEventCut, fireEventDrag, fireEventDragEnd, fireEventDragEnter, fireEventDragExit, fireEventDragLeave, fireEventDragOver, fireEventDragStart, fireEventDrop, fireEventEmptied, fireEventEnded, fireEventFocus, fireEventInvalid, fireEventKeyDown, fireEventKeyUp, fireEventLoad, fireEventLoadedMetadata, fireEventMouseDown, fireEventMouseEnter, fireEventMouseLeave, fireEventMouseMove, fireEventMouseOut, fireEventMouseOver, fireEventMouseUp, fireEventPaste, fireEventPause, fireEventPlaying, fireEventPointerCancel, fireEventPointerDown, fireEventPointerMove, fireEventPointerOut, fireEventPointerOver, fireEventPointerUp, fireEventRateChange, fireEventSeeked, fireEventSelect, fireEventSubmit, fireEventSuspend, fireEventTouchCancel, fireEventTouchEnd, fireEventTouchMove, fireEventTouchStart, fireEventTransitionEnd, fireEventVolumeChange, fireEventWheel, renderComponent)
 import Record (disjointUnion)
-import Simple.JSON (class ReadForeign, read)
+import Simple.JSON (read)
 import Test.Event.Component (mkEventElem, mkEventImg, mkEventInput, on)
-import Test.Spec (Spec, SpecT, after_, describe, it)
+import Test.Spec (Spec, after_, describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
-import Web.HTML (HTMLElement)
-import Prim.Row (class Cons, class Lacks)
 
 spec ∷ Spec Unit
 spec =
@@ -117,7 +112,7 @@ spec =
       receivesEvent R.div on.keyDown (fireEventKeyDown defaultKeyboardEvent) (defaultKeyboardEvent `disjointUnion` { type: "keydown" })
       receivesEvent R.div on.keyUp (fireEventKeyUp defaultKeyboardEvent) (defaultKeyboardEvent `disjointUnion` { type: "keyup" })
 
-checkWithVar ∷ ∀ t1919 t1942. Show t1942 => Eq t1942 => t1942 -> (AVar.AVar (Either MultipleErrors (Maybe t1942)) -> Aff t1919) -> Aff Unit
+checkWithVar ∷ ∀ a b. Show a => Eq a => a -> (AVar (Either (NonEmptyList ForeignError) (Maybe a)) -> Aff b) -> Aff Unit
 checkWithVar expected calc = do
   var <- AVar.empty
   comp <- calc var
@@ -127,59 +122,24 @@ checkWithVar expected calc = do
     Just (Left broken) -> fail $ "\n\tEvent is malformed:\n\n\t" <> (printErrors broken) <> "\n"
     Just (Right actual) -> actual `shouldEqual` Just expected
 
-renderAndCheck ∷
-  ∀ t105 t130 t81 t82 t94.
-  Monad t81 =>
-  IsSymbol t82 =>
-  Discard t105 =>
-  Show t130 =>
-  Eq t130 =>
-  SProxy t82 ->
-  ((t94 -> Aff Unit) -> Effect (ReactComponent (Record ()))) ->
-  (t94 -> Either MultipleErrors (Maybe t130)) ->
-  ( RenderQueries ->
-    Aff t105
-  ) ->
-  t130 -> SpecT Aff Unit t81 Unit
 renderAndCheck event mkComp toSave check expected =
-  it (reflectSymbol event)
-    $ do
-        var <- AVar.empty
-        comp <- liftEffect $ mkComp (\x -> var # AVar.put (toSave x))
-        helpers <- renderComponent comp {}
-        check helpers
-        result <- AVar.tryRead var
-        case result of
-          Nothing -> fail $ "\tVariable not written\n\n"
-          Just (Left broken) -> fail $ "\n\tEvent is malformed:\n\n\t" <> (printErrors broken) <> "\n"
-          Just (Right actual) -> actual `shouldEqual` Just expected
+  it (reflectSymbol event) do
+    var <- AVar.empty
+    comp <- mkComp (\x -> var # AVar.put (toSave x)) # liftEffect
+    cleanup
+    helpers <- renderComponent comp {}
+    check helpers
+    result <- AVar.read var
+    case result of
+      Left broken -> fail $ "\n\tEvent is malformed:\n\n\t" <> (printErrors broken) <> "\n"
+      Right actual -> actual `shouldEqual` Just expected
 
-receivesEvent ∷
-  ∀ t141 t142 t143 t145 t146.
-  Monad t141 =>
-  IsSymbol t146 =>
-  Discard t143 =>
-  Show t142 =>
-  Eq t142 =>
-  Cons
-    t146
-    (EffectFn1 SyntheticEvent Unit)
-    ( _data ∷ Object String
-    , style ∷ CSS
-    )
-    t145 =>
-  Lacks
-    t146
-    ( _data ∷ Object String
-    , style ∷ CSS
-    ) =>
-  ReadForeign t142 => (Record t145 -> JSX) -> SProxy t146 -> (HTMLElement -> Aff t143) -> t142 -> SpecT Aff Unit t141 Unit
 receivesEvent elem event fire =
   renderAndCheck
     event
     (mkEventElem elem event syntheticEvent)
-    (read <<< unsafeToForeign) \{ findByTestId } ->
-    findByTestId "event-component" >>= fire
+    (read <<< unsafeToForeign)
+    (\{ findByTestId } -> findByTestId "event-component" >>= fire)
 
 receivesEventImg event fire =
   renderAndCheck

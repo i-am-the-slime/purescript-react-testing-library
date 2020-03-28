@@ -3,10 +3,10 @@
 // We're not using jest or any other compatible framework
 require("@testing-library/react/dont-cleanup-after-each");
 // So that we have a "document"
-require("jsdom-global")(undefined, { url: "https://bier.de"});
-var T = require("@testing-library/react");
+require("jsdom-global")(undefined, { url: "https://bier.de" });
+var T = require("@testing-library/react/pure");
 
-T.configure({defaultHidden: true})
+T.configure({ defaultHidden: true });
 exports.cleanupImpl = T.cleanup;
 
 exports.renderImpl = T.render;
@@ -27,10 +27,7 @@ exports.fireEventFocusImpl = T.fireEvent.focus;
 exports.fireEventBlurImpl = T.fireEvent.blur;
 exports.fireEventFocusInImpl = T.fireEvent.focusIn;
 exports.fireEventFocusOutImpl = T.fireEvent.focusOut;
-exports.fireEventChangeImpl = function(shit, shat) {
-  console.log("Shithsaht", shat)
-  T.fireEvent.change(shit, shat)
-}
+exports.fireEventChangeImpl = T.fireEvent.change;
 exports.fireEventInputImpl = T.fireEvent.input;
 exports.fireEventInvalidImpl = T.fireEvent.invalid;
 exports.fireEventSubmitImpl = T.fireEvent.submit;

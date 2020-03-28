@@ -93,12 +93,14 @@ module React.TestingLibrary
   ) where
 
 import Prelude
+import Control.Monad.Fork.Class (class MonadBracket)
 import Control.Promise (Promise, toAff)
 import Data.Function.Uncurried (Fn1, Fn2, runFn1, runFn2)
 import Data.Identity (Identity)
 import Data.String.Regex (Regex)
 import Effect (Effect)
 import Effect.Aff (Aff)
+import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Uncurried (EffectFn1, EffectFn2, runEffectFn1, runEffectFn2)
 import Foreign (Foreign, unsafeToForeign)

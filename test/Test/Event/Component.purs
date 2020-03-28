@@ -5,7 +5,8 @@ import Data.Symbol (class IsSymbol, SProxy(..))
 import Effect (Effect)
 import Effect.Aff (Aff, launchAff_)
 import Effect.Uncurried (EffectFn1)
-import Foreign.Object (Object, fromHomogeneous)
+import Foreign.Object (Object)
+import Foreign.Object as Obj
 import Prim.Row (class Cons, class Lacks)
 import React.Basic.DOM (CSS, css)
 import React.Basic.DOM as R
@@ -32,7 +33,7 @@ mkEventElem elem onWhat eventFn theHandler =
   where
   built =
     RB.build attrs
-      { _data: fromHomogeneous { testid: "event-component" }
+      { _data: Obj.singleton "testid" "event-component"
       , style: css { width: "10px", height: "10px" }
       }
   attrs =
