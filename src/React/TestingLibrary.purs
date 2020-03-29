@@ -94,7 +94,6 @@ module React.TestingLibrary
   ) where
 
 import Prelude
-import Control.Monad.Fork.Class (class MonadBracket)
 import Control.Promise (Promise, toAff)
 import Control.Promise as Promise
 import Data.Function.Uncurried (Fn1, Fn2, Fn3, runFn1, runFn2, runFn3)
@@ -102,7 +101,6 @@ import Data.Identity (Identity)
 import Data.String.Regex (Regex)
 import Effect (Effect)
 import Effect.Aff (Aff)
-import Effect.Aff.Class (class MonadAff)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Uncurried (EffectFn1, EffectFn2, runEffectFn1, runEffectFn2)
 import Foreign (Foreign, unsafeToForeign)
@@ -151,10 +149,10 @@ type RenderQueries
     , findAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
     }
 
-foreign import cleanupImpl ∷ Effect Unit
+foreign import cleanupImpl ∷ Effect (Promise Unit)
 
-cleanup ∷ ∀ m. MonadEffect m => m Unit
-cleanup = liftEffect cleanupImpl
+cleanup ∷ Aff Unit
+cleanup = join (liftEffect (Promise.toAff <$> cleanupImpl))
 
 --| Example use:
 --| ```purescript
