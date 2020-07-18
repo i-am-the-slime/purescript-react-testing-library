@@ -4,7 +4,7 @@ This are purescript wrappers for [react-testing-library](https://github.com/test
 
 ## First install the node packages
 ```
-npm install --save-dev @testing-library/react jsdom jsdom-global
+npm install --save-dev @testing-library/react @testing-library/user-event jsdom jsdom-global
 ```
 
 ## Example
