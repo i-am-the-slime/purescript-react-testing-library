@@ -12,7 +12,7 @@ import Network.RemoteData as RD
 import React.Basic.DOM as R
 import React.Basic.DOM.Events (targetValue)
 import React.Basic.Events (handler, handler_)
-import React.Basic.Hooks (JSX, ReactChildren, ReactComponent, ReactContext, component, componentWithChildren, fragment, provider, reactChildrenToArray, useContext, useState, (/\))
+import React.Basic.Hooks (JSX, ReactChildren, ReactComponent, ReactContext, fragment, provider, reactChildrenToArray, reactComponent, reactComponentWithChildren, useContext, useState, (/\))
 import React.Basic.Hooks as React
 
 type Ctx
@@ -23,12 +23,12 @@ mkProvider ∷
   Ctx ->
   Effect (ReactComponent { children ∷ ReactChildren JSX })
 mkProvider context interpreter = do
-  componentWithChildren "Provider" \{ children } -> React.do
+  reactComponentWithChildren "Provider" \{ children } -> React.do
     pure $ provider context interpreter (reactChildrenToArray children)
 
 mkAjaxRecord ∷ ReactContext Ctx -> Effect (ReactComponent {})
 mkAjaxRecord ctx = do
-  component "Ajax" \props -> React.do
+  reactComponent "Ajax" \props -> React.do
     remoteUserId /\ modifyUserId <- useState RD.NotAsked
     inputText /\ updateInputText <- useState Nothing
     { getUser } <- useContext ctx

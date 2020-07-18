@@ -11,7 +11,7 @@ import Prim.Row (class Cons, class Lacks)
 import React.Basic.DOM (CSS, css)
 import React.Basic.DOM as R
 import React.Basic.Events (EventFn, SyntheticEvent, handler)
-import React.Basic.Hooks (JSX, ReactComponent, component)
+import React.Basic.Hooks (JSX, ReactComponent, reactComponent)
 import Record.Builder as RB
 
 mkEventElem ∷
@@ -28,7 +28,7 @@ mkEventElem ∷
   (eventFn -> Aff Unit) ->
   Effect (ReactComponent (Record props))
 mkEventElem elem onWhat eventFn theHandler =
-  component "EventComponent" \_ -> React.do
+  reactComponent "EventComponent" \_ -> React.do
     pure (elem built)
   where
   built =
@@ -43,7 +43,7 @@ mkEventElem elem onWhat eventFn theHandler =
       )
 
 mkEventImg onWhat eventFn theHandler =
-  component "EventComponent" \_ -> React.do
+  reactComponent "EventComponent" \_ -> React.do
     pure (R.img built)
   where
   built =
@@ -58,7 +58,7 @@ mkEventImg onWhat eventFn theHandler =
       )
 
 mkEventInput onWhat eventFn theHandler =
-  component "EventComponent" \_ -> React.do
+  reactComponent "EventComponent" \_ -> React.do
     pure (R.div built)
   where
   built =

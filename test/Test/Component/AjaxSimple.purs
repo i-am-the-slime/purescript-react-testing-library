@@ -9,7 +9,7 @@ import Effect.Class (liftEffect)
 import Foreign.Object as Object
 import React.Basic.DOM as R
 import React.Basic.Events (handler_)
-import React.Basic.Hooks (ReactComponent, component, fragment, useState, (/\))
+import React.Basic.Hooks (ReactComponent, reactComponent, fragment, useState, (/\))
 import React.Basic.Hooks as React
 
 type GetUserId
@@ -17,7 +17,7 @@ type GetUserId
 
 mkAjaxSimple ∷ GetUserId -> Effect (ReactComponent {})
 mkAjaxSimple getUserId = do
-  component "Ajax" \props -> React.do
+  reactComponent "Ajax" \props -> React.do
     maybeUserId /\ setUserId <- useState Nothing
     let
       getAndSetUser = do

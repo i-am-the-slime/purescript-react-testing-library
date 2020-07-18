@@ -4,12 +4,12 @@ import Prelude
 import Effect (Effect)
 import React.Basic.DOM as R
 import React.Basic.Events (handler_)
-import React.Basic.Hooks (ReactComponent, component, fragment, useState, (/\))
+import React.Basic.Hooks (ReactComponent, reactComponent, fragment, useState, (/\))
 import React.Basic.Hooks as React
 
-mkCounter :: Effect (ReactComponent {})
+mkCounter ∷ Effect (ReactComponent {})
 mkCounter = do
-  component "Counter" \props -> React.do
+  reactComponent "Counter" \props -> React.do
     counter /\ setCounter <- useState 0
     pure
       $ fragment
