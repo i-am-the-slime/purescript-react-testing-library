@@ -10,7 +10,6 @@ import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Exception (Error)
 import Test.Spec.Assertions (fail, shouldEqual)
 import Web.DOM.Node (textContent)
-import Web.HTML.HTMLButtonElement as Buttom
 import Web.HTML.HTMLButtonElement as Button
 import Web.HTML.HTMLElement (HTMLElement)
 import Web.HTML.HTMLElement as HTMLElement

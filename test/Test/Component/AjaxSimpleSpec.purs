@@ -2,10 +2,9 @@ module Test.Component.AjaxSimpleSpec where
 
 import Prelude
 import Data.Maybe (Maybe(..))
-import Effect.Class (liftEffect)
-import React.TestingLibrary (cleanup, fireEventClick, renderComponent, describeComponent)
+import React.TestingLibrary (describeComponent, fireEventClick, renderComponent)
 import Test.Component.AjaxSimple (mkAjaxSimple)
-import Test.Spec (Spec, after_, describe, it)
+import Test.Spec (Spec, it)
 import Test.Spec.Assertions.DOM (textContentShouldEqual)
 
 spec ∷ Spec Unit
