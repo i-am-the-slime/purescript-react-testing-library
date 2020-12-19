@@ -19,12 +19,11 @@
         "purescript-effect": "^v2.0.1",
         "purescript-foreign": "^v5.0.0",
         "purescript-foreign-object": "^v2.0.3",
-        "purescript-react-basic-dom": "^v3.2.0",
+        "purescript-react-basic-dom": "lumihq/purescript-react-basic-dom#^v3.2.0",
         "purescript-react-basic-hooks": "^v6.2.0",
         "purescript-remotedata": "^v4.2.0",
         "purescript-run": "^v3.0.1",
         "purescript-simple-json": "^v7.0.0",
-        "purescript-spec": "^4.0.1",
-        "purescript-spec-discovery": "^4.0.0"
+        "purescript-spec": "^4.0.1"
     }
 }
