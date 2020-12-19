@@ -7,8 +7,8 @@ import Effect.Aff (Aff, launchAff_)
 import Effect.Uncurried (EffectFn1)
 import Foreign.Object (Object)
 import Foreign.Object as Obj
-import Prim.Row (class Cons, class Lacks)
-import React.Basic.DOM (CSS, css)
+import Prim.Row (class Cons, class Lacks, class Union)
+import React.Basic.DOM (CSS, Props_div, Props_img, css)
 import React.Basic.DOM as R
 import React.Basic.Events (EventFn, SyntheticEvent, handler)
 import React.Basic.Hooks (JSX, ReactComponent, reactComponent)
@@ -31,49 +31,160 @@ mkEventElem elem onWhat eventFn theHandler =
   reactComponent "EventComponent" \_ -> React.do
     pure (elem built)
   where
-  built =
-    RB.build attrs
-      { _data: Obj.singleton "testid" "event-component"
-      , style: css { width: "10px", height: "10px" }
-      }
+    built =
+      RB.build attrs
+        { _data: Obj.singleton "testid" "event-component"
+        , style: css { width: "10px", height: "10px" }
+        }
 
-  attrs =
-    RB.insert onWhat
-      ( handler eventFn (launchAff_ <<< theHandler)
-      )
+    attrs =
+      RB.insert onWhat
+        ( handler eventFn (launchAff_ <<< theHandler)
+        )
 
+mkEventImg ∷
+  ∀ t123 t128 t129 t135 t139 t140.
+  Cons
+    t123
+    (EffectFn1 SyntheticEvent Unit)
+    ( alt ∷ String
+    , tabIndex ∷ Int
+    )
+    t140 =>
+  Lacks
+    t123
+    ( alt ∷ String
+    , tabIndex ∷ Int
+    ) =>
+  IsSymbol t123 =>
+  Lacks "children" t135 =>
+  Lacks "key" t135 =>
+  Lacks "ref" t135 =>
+  Union t140 t139 Props_img =>
+  SProxy t123 -> EventFn SyntheticEvent t128 -> (t128 -> Aff t129) -> Effect (ReactComponent (Record t135))
 mkEventImg onWhat eventFn theHandler =
   reactComponent "EventComponent" \_ -> React.do
     pure (R.img built)
   where
-  built =
-    RB.build attrs
-      { alt: "event-component"
-      , tabIndex: 0 -- for key events
-      }
+    built =
+      RB.build attrs
+        { alt: "event-component"
+        , tabIndex: 0 -- for key events
+        }
 
-  attrs =
-    RB.insert onWhat
-      ( handler eventFn (launchAff_ <<< theHandler)
-      )
+    attrs =
+      RB.insert onWhat
+        ( handler eventFn (launchAff_ <<< theHandler)
+        )
 
+mkEventInput ∷
+  ∀ t108 t112 t113 t88 t93 t94.
+  Cons t88 (EffectFn1 SyntheticEvent Unit) ( children ∷ Array JSX ) t113 =>
+  Lacks t88 ( children ∷ Array JSX ) =>
+  IsSymbol t88 =>
+  Lacks "children" t108 =>
+  Lacks "key" t108 =>
+  Lacks "ref" t108 =>
+  Union t113 t112 Props_div => SProxy t88 -> EventFn SyntheticEvent t93 -> (t93 -> Aff t94) -> Effect (ReactComponent (Record t108))
 mkEventInput onWhat eventFn theHandler =
   reactComponent "EventComponent" \_ -> React.do
     pure (R.div built)
   where
-  built =
-    RB.build attrs
-      { children:
-        [ R.input { id: "input-id" }
-        , R.label { htmlFor: "input-id", children: [ R.text "Input Label" ] }
-        ]
-      }
+    built =
+      RB.build attrs
+        { children:
+          [ R.input { id: "input-id" }
+          , R.label { htmlFor: "input-id", children: [ R.text "Input Label" ] }
+          ]
+        }
 
-  attrs =
-    RB.insert onWhat
-      ( handler eventFn (launchAff_ <<< theHandler)
-      )
+    attrs =
+      RB.insert onWhat
+        ( handler eventFn (launchAff_ <<< theHandler)
+        )
 
+on ∷
+  { abort ∷ SProxy "onAbort"
+  , animationEnd ∷ SProxy "onAnimationEnd"
+  , animationIteration ∷ SProxy "onAnimationIteration"
+  , animationStart ∷ SProxy "onAnimationStart"
+  , blur ∷ SProxy "onBlur"
+  , canPlay ∷ SProxy "onCanPlay"
+  , canPlayThrough ∷ SProxy "onCanPlayThrough"
+  , change ∷ SProxy "onChange"
+  , click ∷ SProxy "onClick"
+  , compositionEnd ∷ SProxy "onCompositionEnd"
+  , compositionStart ∷ SProxy "onCompositionStart"
+  , compositionUpdate ∷ SProxy "onCompositionUpdate"
+  , contextMenu ∷ SProxy "onContextMenu"
+  , copy ∷ SProxy "onCopy"
+  , cut ∷ SProxy "onCut"
+  , doubleClick ∷ SProxy "onDblClick"
+  , drag ∷ SProxy "onDrag"
+  , dragEnd ∷ SProxy "onDragEnd"
+  , dragEnter ∷ SProxy "onDragEnter"
+  , dragExit ∷ SProxy "onDragExit"
+  , dragLeave ∷ SProxy "onDragLeave"
+  , dragOver ∷ SProxy "onDragOver"
+  , dragStart ∷ SProxy "onDragStart"
+  , drop ∷ SProxy "onDrop"
+  , durationChange ∷ SProxy "onDurationChange"
+  , emptied ∷ SProxy "onEmptied"
+  , encrypted ∷ SProxy "onEncrypted"
+  , ended ∷ SProxy "onEnded"
+  , error ∷ SProxy "onError"
+  , focus ∷ SProxy "onFocus"
+  , focusIn ∷ SProxy "onFocusIn"
+  , focusOut ∷ SProxy "onFocusOut"
+  , gotPointerCapture ∷ SProxy "onGotPointerCapture"
+  , input ∷ SProxy "onInput"
+  , invalid ∷ SProxy "onInvalid"
+  , keyDown ∷ SProxy "onKeyDown"
+  , keyPress ∷ SProxy "onKeyPress"
+  , keyUp ∷ SProxy "onKeyUp"
+  , load ∷ SProxy "onLoad"
+  , loadStart ∷ SProxy "onLoadStart"
+  , loadedData ∷ SProxy "onLoadedData"
+  , loadedMetadata ∷ SProxy "onLoadedMetadata"
+  , lostPointerCapture ∷ SProxy "onLostPointerCapture"
+  , mouseDown ∷ SProxy "onMouseDown"
+  , mouseEnter ∷ SProxy "onMouseEnter"
+  , mouseLeave ∷ SProxy "onMouseLeave"
+  , mouseMove ∷ SProxy "onMouseMove"
+  , mouseOut ∷ SProxy "onMouseOut"
+  , mouseOver ∷ SProxy "onMouseOver"
+  , mouseUp ∷ SProxy "onMouseUp"
+  , paste ∷ SProxy "onPaste"
+  , pause ∷ SProxy "onPause"
+  , play ∷ SProxy "onPlay"
+  , playing ∷ SProxy "onPlaying"
+  , pointerCancel ∷ SProxy "onPointerCancel"
+  , pointerDown ∷ SProxy "onPointerDown"
+  , pointerEnter ∷ SProxy "onPointerEnter"
+  , pointerLeave ∷ SProxy "onPointerLeave"
+  , pointerMove ∷ SProxy "onPointerMove"
+  , pointerOut ∷ SProxy "onPointerOut"
+  , pointerOver ∷ SProxy "onPointerOver"
+  , pointerUp ∷ SProxy "onPointerUp"
+  , progress ∷ SProxy "onProgress"
+  , rateChange ∷ SProxy "onRateChange"
+  , scroll ∷ SProxy "onScroll"
+  , seeked ∷ SProxy "onSeeked"
+  , seeking ∷ SProxy "onSeeking"
+  , select ∷ SProxy "onSelect"
+  , stalled ∷ SProxy "onStalled"
+  , submit ∷ SProxy "onSubmit"
+  , suspend ∷ SProxy "onSuspend"
+  , timeUpdate ∷ SProxy "onTimeUpdate"
+  , touchCancel ∷ SProxy "onTouchCancel"
+  , touchEnd ∷ SProxy "onTouchEnd"
+  , touchMove ∷ SProxy "onTouchMove"
+  , touchStart ∷ SProxy "onTouchStart"
+  , transitionEnd ∷ SProxy "onTransitionEnd"
+  , volumeChange ∷ SProxy "onVolumeChange"
+  , waiting ∷ SProxy "onWaiting"
+  , wheel ∷ SProxy "onWheel"
+  }
 on =
   { copy: SProxy ∷ SProxy "onCopy"
   , cut: SProxy ∷ SProxy "onCut"

@@ -6,11 +6,9 @@ You can edit this file as you like.
 , dependencies =
   [ "aff-promise"
   , "console"
-  , "debug"
   , "effect"
   , "foreign"
   , "foreign-object"
-  , "psci-support"
   , "react-basic-dom"
   , "react-basic-hooks"
   , "remotedata"
