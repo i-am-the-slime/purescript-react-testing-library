@@ -15,7 +15,6 @@ You can edit this file as you like.
   , "run"
   , "simple-json"
   , "spec"
-  , "spec-discovery"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
