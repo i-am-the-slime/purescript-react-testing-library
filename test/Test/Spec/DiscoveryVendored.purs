@@ -1,6 +1,6 @@
 -- Vendored in because of 
 -- https://github.com/purescript-spec/purescript-spec-discovery/issues/18
-module Test.Spec.Discovery (discover) where
+module Test.Spec.DiscoveryVendored (discover) where
 
 import Prelude
 import Data.Traversable (sequence_)

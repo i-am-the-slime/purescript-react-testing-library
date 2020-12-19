@@ -7,7 +7,7 @@ import Data.Newtype (un)
 import Data.Time.Duration (Seconds(..), fromDuration)
 import Effect (Effect)
 import Effect.Aff (delay, launchAff_)
-import Test.Spec.Discovery (discover)
+import Test.Spec.DiscoveryVendored (discover)
 import Test.Spec.Reporter (consoleReporter)
 import Test.Spec.Runner (defaultConfig, runSpecT)
 
@@ -22,8 +22,8 @@ main = do
       specs
       # un Identity
   where
-  config =
-    defaultConfig
-      { slow = 5.0 # Seconds # fromDuration
-      , timeout = Nothing
-      }
+    config =
+      defaultConfig
+        { slow = 5.0 # Seconds # fromDuration
+        , timeout = Nothing
+        }
