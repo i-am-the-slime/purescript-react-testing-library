@@ -9,6 +9,7 @@ You can edit this file as you like.
   , "effect"
   , "foreign"
   , "foreign-object"
+  , "prelude"
   , "react-basic-dom"
   , "react-basic-hooks"
   , "remotedata"
@@ -19,5 +20,6 @@ You can edit this file as you like.
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 , license = "MIT"
-, repository = "https://github.com/i-am-the-slime/purescript-react-testing-library"
+, repository =
+    "https://github.com/i-am-the-slime/purescript-react-testing-library"
 }
