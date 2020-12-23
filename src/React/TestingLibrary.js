@@ -3,7 +3,7 @@
 // We're not using jest or any other compatible framework
 require("@testing-library/react/dont-cleanup-after-each");
 // So that we have a "document"
-require("jsdom-global")(undefined, { url: "https://bier.de" });
+require("jsdom-global")(undefined, { url: "https://purescript.org", pretendToBeVisual: true });
 var T = require("@testing-library/react/pure");
 var UE = require("@testing-library/user-event");
 
