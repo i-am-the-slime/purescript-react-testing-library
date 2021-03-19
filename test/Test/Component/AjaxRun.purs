@@ -4,8 +4,6 @@ import Prelude
 import Data.Foldable (for_)
 import Data.Int as Int
 import Data.Maybe (Maybe(..), fromMaybe, maybe)
-import Data.Symbol (SProxy(..))
-import Data.Variant.Internal (FProxy)
 import Effect (Effect)
 import Effect.Aff (Aff, launchAff_)
 import Effect.Class (liftEffect)
@@ -17,9 +15,10 @@ import React.Basic.Hooks (JSX, ReactChildren, ReactComponent, ReactContext, reac
 import React.Basic.Hooks as React
 import Run (Run, case_, interpret, on)
 import Run as Run
+import Type.Prelude (Proxy(..))
+import Type.Row (type (+))
 
-newtype Ctx
-  = Ctx (Run ( getUser ∷ GET_USER ) ~> Aff)
+newtype Ctx = Ctx (Run (GET_USER ()) ~> Aff)
 
 mkProvider ∷
   ReactContext Ctx ->
@@ -74,29 +73,31 @@ mkAjaxRun ctx = do
 
 data LogF a
   = Log String a
+
 derive instance functorLogF ∷ Functor LogF
 
-type LOG
-  = FProxy LogF
+type LOG r =
+  ( log ∷ LogF | r )
 
-_log = SProxy ∷ SProxy "log"
+_log = Proxy ∷ Proxy "log"
 
-log ∷ ∀ r. String -> Run ( log ∷ LOG | r ) Unit
+log ∷ ∀ r. String -> Run (LOG + r) Unit
 log str = Run.lift _log (Log str unit)
 
 data GetUserF a
   = GetUser Int (Maybe String -> a)
+
 derive instance functorGetUserF ∷ Functor GetUserF
 
-type GET_USER
-  = FProxy GetUserF
+type GET_USER r =
+  ( getUser ∷ GetUserF | r )
 
-_getUser = SProxy ∷ SProxy "getUser"
+_getUser = Proxy ∷ Proxy "getUser"
 
-getUser ∷ ∀ r. Int -> Run ( getUser ∷ GET_USER | r ) (Maybe String)
+getUser ∷ ∀ r. Int -> Run (GET_USER + r) (Maybe String)
 getUser userId = Run.lift _getUser (GetUser userId identity)
 
-interpretReal ∷ Run ( getUser ∷ GET_USER ) ~> Aff
+interpretReal ∷ Run (GET_USER ()) ~> Aff
 interpretReal =
   interpret
     ( case_

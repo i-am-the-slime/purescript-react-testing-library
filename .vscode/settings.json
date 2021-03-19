@@ -20,7 +20,5 @@
     "**/.history": true
   },
   "purescript.addSpagoSources": true,
-  "purescript.buildCommand": "spago build -- --json-errors",
-  "purescript.addNpmPath": true,
-  "purescript.packagePath": ".spago"
+  "purescript.addNpmPath": true
 }

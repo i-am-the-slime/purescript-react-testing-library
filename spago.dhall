@@ -14,7 +14,6 @@ You can edit this file as you like.
   , "react-basic-hooks"
   , "remotedata"
   , "run"
-  , "simple-json"
   , "spec"
   ]
 , packages = ./packages.dhall
