@@ -12,7 +12,7 @@ import Test.Component.AjaxRun (GET_USER, GetUserF(..), Ctx(..), _getUser, mkAjax
 import Test.Spec (Spec, after_, describe, it)
 import Test.Spec.Assertions.DOM (textContentShouldEqual)
 
-interpretMock ∷ Run ( getUser ∷ GET_USER ) ~> Aff
+interpretMock ∷ Run (GET_USER ()) ~> Aff
 interpretMock =
   interpret
     ( case_

@@ -111,43 +111,43 @@ import Unsafe.Coerce (unsafeCoerce)
 import Web.Event.Internal.Types (Event)
 import Web.HTML (HTMLElement)
 
-type RenderQueriesJS
-  = { findByLabelText ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByLabelText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    , findByTestId ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByTestId ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    , findByAltText ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByAltText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    , findByText ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    , findByTitle ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByTitle ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    , findByDisplayValue ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByDisplayValue ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    , findByRole ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByRole ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    , findByPlaceholderText ∷ Fn1 Foreign (Promise HTMLElement)
-    , findAllByPlaceholderText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-    }
+type RenderQueriesJS =
+  { findByLabelText ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByLabelText ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , findByTestId ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByTestId ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , findByAltText ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByAltText ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , findByText ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByText ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , findByTitle ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByTitle ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , findByDisplayValue ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByDisplayValue ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , findByRole ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByRole ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , findByPlaceholderText ∷ Fn1 Foreign (Promise HTMLElement)
+  , findAllByPlaceholderText ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  }
 
-type RenderQueries
-  = { findByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByRole ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    }
+type RenderQueries =
+  { findByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , findByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , findByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , findByText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , findByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , findByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , findByRole ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , findByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+  , findAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  }
 
 foreign import cleanupImpl ∷ Effect (Promise Unit)
 
@@ -245,18 +245,18 @@ foreign import fireEventCompositionUpdateImpl ∷ EffectFn2 HTMLElement Foreign 
 fireEventCompositionUpdate ∷ ∀ m. MonadEffect m => String -> HTMLElement -> m Unit
 fireEventCompositionUpdate str el = liftRunEffectFn2 fireEventCompositionUpdateImpl el (unsafeToForeign { data: str })
 
-type FakeKeyboardEvent
-  = { altKey ∷ Boolean
-    , charCode ∷ Int
-    , ctrlKey ∷ Boolean
-    , key ∷ String
-    , keyCode ∷ Int
-    , location ∷ Number
-    , which ∷ Int
-    , metaKey ∷ Boolean
-    , repeat ∷ Boolean
-    , shiftKey ∷ Boolean
-    }
+type FakeKeyboardEvent =
+  { altKey ∷ Boolean
+  , charCode ∷ Int
+  , ctrlKey ∷ Boolean
+  , key ∷ String
+  , keyCode ∷ Int
+  , location ∷ Number
+  , which ∷ Int
+  , metaKey ∷ Boolean
+  , repeat ∷ Boolean
+  , shiftKey ∷ Boolean
+  }
 
 defaultKeyboardEvent ∷ FakeKeyboardEvent
 defaultKeyboardEvent =
@@ -660,6 +660,7 @@ typeText ∷ String -> HTMLElement -> Aff Unit
 typeText text el = Promise.toAff $ runFn3 typeImpl el text (unsafeToForeign {})
 
 -- | To be used for most of the getBy/findBy etc functions
+class TextMatch ∷ ∀ k. k -> Constraint
 class TextMatch a
 
 instance tmString ∷ TextMatch String

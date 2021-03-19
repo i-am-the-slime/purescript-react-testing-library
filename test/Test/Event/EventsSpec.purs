@@ -21,7 +21,7 @@ import React.Basic.DOM.Events (compositionData)
 import React.Basic.Events (EventFn, EventHandler, SyntheticEvent, syntheticEvent)
 import React.TestingLibrary (class TextMatch, cleanup, defaultKeyboardEvent, fireEventAnimationEnd, fireEventAnimationIteration, fireEventAnimationStart, fireEventBlur, fireEventCanPlay, fireEventCanPlayThrough, fireEventClick, fireEventCompositionEnd, fireEventCompositionStart, fireEventCompositionUpdate, fireEventContextMenu, fireEventCopy, fireEventCut, fireEventDrag, fireEventDragEnd, fireEventDragEnter, fireEventDragExit, fireEventDragLeave, fireEventDragOver, fireEventDragStart, fireEventDrop, fireEventEmptied, fireEventEnded, fireEventFocus, fireEventInvalid, fireEventKeyDown, fireEventKeyUp, fireEventLoad, fireEventLoadedMetadata, fireEventMouseDown, fireEventMouseEnter, fireEventMouseLeave, fireEventMouseMove, fireEventMouseOut, fireEventMouseOver, fireEventMouseUp, fireEventPaste, fireEventPause, fireEventPlaying, fireEventPointerCancel, fireEventPointerDown, fireEventPointerMove, fireEventPointerOut, fireEventPointerOver, fireEventPointerUp, fireEventRateChange, fireEventSeeked, fireEventSelect, fireEventSubmit, fireEventSuspend, fireEventTouchCancel, fireEventTouchEnd, fireEventTouchMove, fireEventTouchStart, fireEventTransitionEnd, fireEventVolumeChange, fireEventWheel, renderComponent)
 import Record (disjointUnion)
-import Simple.JSON (class ReadForeign, read)
+import Test.JSON (class ReadForeign, read)
 import Test.Event.Component (mkEventElem, mkEventImg, mkEventInput, on)
 import Test.Spec (Spec, after_, describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
@@ -241,10 +241,10 @@ receivesEventData elem fn event fire expected =
 printErrors ∷ MultipleErrors -> String
 printErrors errs = errs # intercalateMap ",\n\t" renderForeignError
   where
-    renderForeignError ∷ ForeignError -> String
-    renderForeignError = case _ of
-      ForeignError msg -> msg
-      ErrorAtIndex i e -> "[" <> show i <> "]: " <> renderForeignError e
-      ErrorAtProperty prop e -> show prop <> " " <> renderForeignError e
-      TypeMismatch exp "Undefined" -> "missing (should be of type " <> exp <> ")"
-      TypeMismatch exp act -> "property has wrong type " <> exp <> " ≠ " <> act
+  renderForeignError ∷ ForeignError -> String
+  renderForeignError = case _ of
+    ForeignError msg -> msg
+    ErrorAtIndex i e -> "[" <> show i <> "]: " <> renderForeignError e
+    ErrorAtProperty prop e -> show prop <> " " <> renderForeignError e
+    TypeMismatch exp "Undefined" -> "missing (should be of type " <> exp <> ")"
+    TypeMismatch exp act -> "property has wrong type " <> exp <> " ≠ " <> act
