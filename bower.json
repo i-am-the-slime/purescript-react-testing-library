@@ -24,7 +24,6 @@
         "purescript-react-basic-hooks": "^v6.2.0",
         "purescript-remotedata": "^v4.2.0",
         "purescript-run": "^v3.0.1",
-        "purescript-simple-json": "^v7.0.0",
         "purescript-spec": "^4.0.1"
     }
 }
