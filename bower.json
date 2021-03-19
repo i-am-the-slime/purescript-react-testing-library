@@ -14,16 +14,16 @@
         "output"
     ],
     "dependencies": {
-        "purescript-aff-promise": "^v2.1.0",
-        "purescript-console": "^v4.4.0",
-        "purescript-effect": "^v2.0.1",
-        "purescript-foreign": "^v5.0.0",
-        "purescript-foreign-object": "^v2.0.3",
-        "purescript-prelude": "^v4.1.1",
-        "purescript-react-basic-dom": "lumihq/purescript-react-basic-dom#^v3.2.0",
-        "purescript-react-basic-hooks": "^v6.2.0",
-        "purescript-remotedata": "^v4.2.0",
-        "purescript-run": "^v3.0.1",
-        "purescript-spec": "^4.0.1"
+        "purescript-aff-promise": "^v3.0.0",
+        "purescript-console": "^v5.0.0",
+        "purescript-effect": "^v3.0.0",
+        "purescript-foreign": "^v6.0.0",
+        "purescript-foreign-object": "^v3.0.0",
+        "purescript-prelude": "^v5.0.0",
+        "purescript-react-basic-dom": "lumihq/purescript-react-basic-dom#^v4.0.1",
+        "purescript-react-basic-hooks": "^v7.0.0",
+        "purescript-remotedata": "^v5.0.0",
+        "purescript-run": "^v4.0.0",
+        "purescript-spec": "^5.0.0"
     }
 }
