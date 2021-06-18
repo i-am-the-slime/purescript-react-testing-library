@@ -98,6 +98,7 @@ import Control.Promise (Promise, toAff)
 import Control.Promise as Promise
 import Data.Function.Uncurried (Fn1, Fn2, Fn3, runFn1, runFn2, runFn3)
 import Data.Identity (Identity)
+import Data.Maybe (Maybe(..))
 import Data.String.Regex (Regex)
 import Effect (Effect)
 import Effect.Aff (Aff)
@@ -128,6 +129,22 @@ type RenderQueriesJS =
   , findAllByRole ∷ Fn1 Foreign (Promise (Array HTMLElement))
   , findByPlaceholderText ∷ Fn1 Foreign (Promise HTMLElement)
   , findAllByPlaceholderText ∷ Fn1 Foreign (Promise (Array HTMLElement))
+  , queryByLabelText ∷ Fn1 Foreign HTMLElement
+  , queryAllByLabelText ∷ Fn1 Foreign (Array HTMLElement)
+  , queryByTestId ∷ Fn1 Foreign HTMLElement
+  , queryAllByTestId ∷ Fn1 Foreign (Array HTMLElement)
+  , queryByAltText ∷ Fn1 Foreign HTMLElement
+  , queryAllByAltText ∷ Fn1 Foreign (Array HTMLElement)
+  , queryByText ∷ Fn1 Foreign HTMLElement
+  , queryAllByText ∷ Fn1 Foreign (Array HTMLElement)
+  , queryByTitle ∷ Fn1 Foreign HTMLElement
+  , queryAllByTitle ∷ Fn1 Foreign (Array HTMLElement)
+  , queryByDisplayValue ∷ Fn1 Foreign HTMLElement
+  , queryAllByDisplayValue ∷ Fn1 Foreign (Array HTMLElement)
+  , queryByRole ∷ Fn1 Foreign HTMLElement
+  , queryAllByRole ∷ Fn1 Foreign (Array HTMLElement)
+  , queryByPlaceholderText ∷ Fn1 Foreign HTMLElement
+  , queryAllByPlaceholderText ∷ Fn1 Foreign (Array HTMLElement)
   }
 
 type RenderQueries =
@@ -147,6 +164,22 @@ type RenderQueries =
   , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
   , findByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
   , findAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+  , queryByLabelText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByLabelText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , queryByTestId ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByTestId ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , queryByAltText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByAltText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , queryByText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , queryByTitle ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByTitle ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , queryByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , queryByRole ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByRole ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , queryByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+  , queryAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
   }
 
 foreign import cleanupImpl ∷ Effect (Promise Unit)
@@ -194,6 +227,22 @@ toRenderQueries rq =
   , findAllByRole: map unsafeCoerce runToAff1 rq.findAllByRole
   , findByPlaceholderText: map unsafeCoerce runToAff1 rq.findByPlaceholderText
   , findAllByPlaceholderText: map unsafeCoerce runToAff1 rq.findAllByPlaceholderText
+  , queryByLabelText: map unsafeCoerce runFn1 (query rq.queryByLabelText)
+  , queryAllByLabelText: map unsafeCoerce runFn1 (query rq.queryAllByLabelText)
+  , queryByTestId: map unsafeCoerce runFn1 (query rq.queryByTestId)
+  , queryAllByTestId: map unsafeCoerce runFn1 (query rq.queryAllByTestId)
+  , queryByAltText: map unsafeCoerce runFn1 (query rq.queryByAltText)
+  , queryAllByAltText: map unsafeCoerce runFn1 (query rq.queryAllByAltText)
+  , queryByText: map unsafeCoerce runFn1 (query rq.queryByText)
+  , queryAllByText: map unsafeCoerce runFn1 (query rq.queryAllByText)
+  , queryByTitle: map unsafeCoerce runFn1 (query rq.queryByTitle)
+  , queryAllByTitle: map unsafeCoerce runFn1 (query rq.queryAllByTitle)
+  , queryByDisplayValue: map unsafeCoerce runFn1 (query rq.queryByDisplayValue)
+  , queryAllByDisplayValue: map unsafeCoerce runFn1 (query rq.queryAllByDisplayValue)
+  , queryByRole: map unsafeCoerce runFn1 (query rq.queryByRole)
+  , queryAllByRole: map unsafeCoerce runFn1 (query rq.queryAllByRole)
+  , queryByPlaceholderText: map unsafeCoerce runFn1 (query rq.queryByPlaceholderText)
+  , queryAllByPlaceholderText: map unsafeCoerce runFn1 (query rq.queryAllByPlaceholderText)
   }
 
 foreign import renderImpl ∷ EffectFn1 JSX RenderQueriesJS
@@ -209,6 +258,11 @@ foreign import findByTextImpl ∷ Fn2 HTMLElement String (Promise HTMLElement)
 
 findByText ∷ HTMLElement -> String -> Aff HTMLElement
 findByText el str = toAff (runFn2 findByTextImpl el str)
+
+foreign import queryImpl ∷ ∀ a. (∀ x. x -> Maybe x) -> (∀ x. Maybe x) -> (Fn1 Foreign a) -> Foreign -> Maybe a
+
+query ∷ ∀ a. (Fn1 Foreign a) -> Foreign -> Maybe a
+query = queryImpl Just Nothing
 
 foreign import fireEventImpl ∷ EffectFn2 HTMLElement Event Unit
 

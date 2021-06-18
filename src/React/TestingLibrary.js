@@ -14,6 +14,11 @@ exports.renderImpl = T.render;
 
 exports.findByTextImpl = T.findByText;
 
+exports.queryImpl = just => nothing => query => elem => {
+  let result = query(elem);
+  return result === null ? nothing : just(result);
+};
+
 exports.fireEventImpl = T.fireEvent;
 exports.fireEventCopyImpl = T.fireEvent.copy;
 exports.fireEventCutImpl = T.fireEvent.cut;
