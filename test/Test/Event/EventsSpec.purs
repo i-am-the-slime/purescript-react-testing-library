@@ -153,6 +153,22 @@ renderAndCheck ∷
     , findByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findByText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
     , findByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+    , queryAllByAltText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryAllByLabelText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryAllByRole ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryAllByTestId ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryAllByText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryAllByTitle ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
+    , queryByAltText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+    , queryByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+    , queryByLabelText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+    , queryByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+    , queryByRole ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+    , queryByTestId ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+    , queryByText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+    , queryByTitle ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
     } ->
     Aff t100
   ) ->
