@@ -59,74 +59,74 @@ type E a =
 
 -- | Read a JSON string to a type `a` while returning a `MultipleErrors` if the
 -- | parsing failed.
-readJSON ∷
-  ∀ a.
-  ReadForeign a =>
-  String ->
-  E a
+readJSON
+  ∷ ∀ a
+   . ReadForeign a
+  => String
+  -> E a
 readJSON = runExcept <<< (readImpl <=< parseJSON)
 
 -- | Read a JSON string to a type `a` using `F a`. Useful with record types.
-readJSON' ∷
-  ∀ a.
-  ReadForeign a =>
-  String ->
-  F a
+readJSON'
+  ∷ ∀ a
+   . ReadForeign a
+  => String
+  -> F a
 readJSON' = readImpl <=< parseJSON
 
 -- | Read a JSON string to a type `a` while returning `Nothing` if the parsing
 -- | failed.
-readJSON_ ∷
-  ∀ a.
-  ReadForeign a =>
-  String ->
-  Maybe a
+readJSON_
+  ∷ ∀ a
+   . ReadForeign a
+  => String
+  -> Maybe a
 readJSON_ = hush <<< readJSON
 
 -- | Write a JSON string from a type `a`.
-writeJSON ∷
-  ∀ a.
-  WriteForeign a =>
-  a ->
-  String
+writeJSON
+  ∷ ∀ a
+   . WriteForeign a
+  => a
+  -> String
 writeJSON = unsafeStringify <<< writeImpl
 
-write ∷
-  ∀ a.
-  WriteForeign a =>
-  a ->
-  Foreign
+write
+  ∷ ∀ a
+   . WriteForeign a
+  => a
+  -> Foreign
 write = writeImpl
 
 -- | Read a Foreign value to a type
-read ∷
-  ∀ a.
-  ReadForeign a =>
-  Foreign ->
-  E a
+read
+  ∷ ∀ a
+   . ReadForeign a
+  => Foreign
+  -> E a
 read = runExcept <<< readImpl
 
 -- | Read a value of any type as Foreign to a type
-readAsForeign ∷
-  ∀ a b.
-  ReadForeign a =>
-  b ->
-  E a
+readAsForeign
+  ∷ ∀ a b
+   . ReadForeign a
+  => b
+  -> E a
 readAsForeign = read <<< unsafeToForeign
 
-read' ∷
-  ∀ a.
-  ReadForeign a =>
-  Foreign ->
-  F a
+read'
+  ∷ ∀ a
+   . ReadForeign a
+  => Foreign
+  -> F a
 read' = readImpl
 
 -- | Read a Foreign value to a type, as a Maybe of type
-read_ ∷
-  ∀ a.
-  ReadForeign a =>
-  Foreign ->
-  Maybe a
+read_
+  ∷ ∀ a
+   . ReadForeign a
+  => Foreign
+  -> Maybe a
 read_ = hush <<< read
 
 foreign import _parseJSON ∷ EU.EffectFn1 String Foreign
@@ -188,9 +188,10 @@ instance readMaybe ∷ ReadForeign a => ReadForeign (Maybe a) where
 instance readNullable ∷ ReadForeign a => ReadForeign (Nullable a) where
   readImpl o =
     withExcept (map reformat)
-      $ map toNullable
-      <$> traverse readImpl
-      =<< readNull o
+      $
+        map toNullable
+          <$> traverse readImpl
+          =<< readNull o
     where
     reformat error = case error of
       TypeMismatch inner other -> TypeMismatch ("Nullable " <> inner) other
@@ -215,10 +216,10 @@ instance readRecord ∷
 
 -- | A class for reading foreign values from properties
 class ReadForeignFields (xs ∷ RowList Type) (from ∷ Row Type) (to ∷ Row Type) | xs -> from to where
-  getFields ∷
-    Proxy xs ->
-    Foreign ->
-    F (Builder (Record from) (Record to))
+  getFields
+    ∷ Proxy xs
+    -> Foreign
+    -> F (Builder (Record from) (Record to))
 
 instance readFieldsCons ∷
   ( IsSymbol name
@@ -271,10 +272,10 @@ instance readForeignVariant ∷
   readImpl o = readVariantImpl (Proxy ∷ Proxy rl) o
 
 class ReadForeignVariant (xs ∷ RowList Type) (row ∷ Row Type) | xs -> row where
-  readVariantImpl ∷
-    Proxy xs ->
-    Foreign ->
-    F (Variant row)
+  readVariantImpl
+    ∷ Proxy xs
+    -> Foreign
+    -> F (Variant row)
 
 instance readVariantNil ∷
   ReadForeignVariant Nil trash where
@@ -387,7 +388,7 @@ class WriteForeignVariant (rl ∷ RowList Type) (row ∷ Row Type) | rl -> row w
 
 instance nilWriteForeignVariant ∷
   WriteForeignVariant Nil () where
-  -- a PureScript-defined variant cannot reach this path, but a JavaScript FFI one could. 
+  -- a PureScript-defined variant cannot reach this path, but a JavaScript FFI one could.
   writeVariantImpl _ _ = unsafeCrashWith "Variant was not able to be writen row WriteForeign."
 
 instance consWriteForeignVariant ∷

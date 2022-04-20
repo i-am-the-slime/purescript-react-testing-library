@@ -108,6 +108,140 @@ let additions =
 -------------------------------
 -}
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.14.0-20210318/packages.dhall sha256:98bbacd65191cef354ecbafa1610be13e183ee130491ab9c0ef6e3d606f781b5
+      https://raw.githubusercontent.com/purescript/package-sets/prepare-0.15/src/packages.dhall
+        sha256:b1c6d06132b7cbf1e93b1e5343044fba1604b50bfbe02d8f80a3002e71569c59
 
 in  upstream
+  with spec =
+    { repo = "https://github.com/purescript-spec/purescript-spec.git"
+    , version = "master"
+    , dependencies =
+      [ "aff"
+      , "ansi"
+      , "avar"
+      , "console"
+      , "exceptions"
+      , "foldable-traversable"
+      , "fork"
+      , "now"
+      , "pipes"
+      , "prelude"
+      , "strings"
+      , "transformers"
+      ]
+    }
+  with react-basic =
+    { dependencies = [ "prelude", "effect", "record" ]
+    , repo = "https://github.com/lumihq/purescript-react-basic.git"
+    , version = "v16.0.0"
+    }
+  with react-basic-dom =
+    { dependencies =
+      [ "prelude"
+      , "console"
+      , "effect"
+      , "foreign-object"
+      , "psci-support"
+      , "react-basic"
+      , "unsafe-coerce"
+      , "web-dom"
+      , "web-events"
+      , "web-file"
+      , "web-html"
+      ]
+    , repo = "https://github.com/lumihq/purescript-react-basic-dom.git"
+    , version = "v4.2.0"
+    }
+  with react-basic-emotion =
+    { dependencies =
+      [ "colors"
+      , "console"
+      , "effect"
+      , "foreign"
+      , "foreign-object"
+      , "numbers"
+      , "prelude"
+      , "react-basic"
+      , "react-basic-hooks"
+      , "typelevel-prelude"
+      , "unsafe-reference"
+      ]
+    , repo = "https://github.com/lumihq/purescript-react-basic-emotion.git"
+    , version = "es-modules"
+    }
+  with react-basic.repo
+       =
+      "https://github.com/working-group-purescript-es/purescript-react-basic.git"
+  with react-basic.version = "es-modules"
+  with react-basic-dom.repo
+       =
+      "https://github.com/working-group-purescript-es/purescript-react-basic-dom.git"
+  with react-basic-dom.version = "es-modules"
+  with react-basic-hooks =
+    { dependencies =
+      [ "aff"
+      , "aff-promise"
+      , "bifunctors"
+      , "console"
+      , "control"
+      , "datetime"
+      , "effect"
+      , "either"
+      , "exceptions"
+      , "foldable-traversable"
+      , "functions"
+      , "indexed-monad"
+      , "integers"
+      , "maybe"
+      , "newtype"
+      , "now"
+      , "nullable"
+      , "ordered-collections"
+      , "prelude"
+      , "psci-support"
+      , "react-basic"
+      , "refs"
+      , "tuples"
+      , "type-equality"
+      , "unsafe-coerce"
+      , "unsafe-reference"
+      , "web-html"
+      ]
+    , repo = "https://github.com/spicydonuts/purescript-react-basic-hooks.git"
+    , version = "purs-0.15-updates"
+    }
+  with variant =
+    { dependencies =
+      [ "enums"
+      , "lists"
+      , "maybe"
+      , "partial"
+      , "prelude"
+      , "record"
+      , "tuples"
+      , "unsafe-coerce"
+      ]
+    , repo =
+        "https://github.com/working-group-purescript-es/purescript-variant.git"
+    , version = "v0.15.0-update"
+    }
+  with run =
+    { dependencies =
+      [ "aff"
+      , "effect"
+      , "either"
+      , "free"
+      , "maybe"
+      , "newtype"
+      , "prelude"
+      , "profunctor"
+      , "tailrec"
+      , "tuples"
+      , "type-equality"
+      , "typelevel-prelude"
+      , "unsafe-coerce"
+      , "variant"
+      ]
+    , repo = "https://github.com/natefaubion/purescript-run.git"
+    , version = "v4.0.0"
+    }

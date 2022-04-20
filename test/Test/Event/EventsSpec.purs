@@ -1,11 +1,12 @@
 module Test.Event.EventsSpec where
 
 import Prelude
+
 import Data.Either (Either(..))
 import Data.List.NonEmpty (NonEmptyList)
 import Data.Maybe (Maybe(..))
 import Data.Semigroup.Foldable (intercalateMap)
-import Data.Symbol (class IsSymbol, SProxy, reflectSymbol)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.AVar (AVar)
 import Effect.Aff (Aff)
@@ -21,10 +22,11 @@ import React.Basic.DOM.Events (compositionData)
 import React.Basic.Events (EventFn, EventHandler, SyntheticEvent, syntheticEvent)
 import React.TestingLibrary (class TextMatch, cleanup, defaultKeyboardEvent, fireEventAnimationEnd, fireEventAnimationIteration, fireEventAnimationStart, fireEventBlur, fireEventCanPlay, fireEventCanPlayThrough, fireEventClick, fireEventCompositionEnd, fireEventCompositionStart, fireEventCompositionUpdate, fireEventContextMenu, fireEventCopy, fireEventCut, fireEventDrag, fireEventDragEnd, fireEventDragEnter, fireEventDragExit, fireEventDragLeave, fireEventDragOver, fireEventDragStart, fireEventDrop, fireEventEmptied, fireEventEnded, fireEventFocus, fireEventInvalid, fireEventKeyDown, fireEventKeyUp, fireEventLoad, fireEventLoadedMetadata, fireEventMouseDown, fireEventMouseEnter, fireEventMouseLeave, fireEventMouseMove, fireEventMouseOut, fireEventMouseOver, fireEventMouseUp, fireEventPaste, fireEventPause, fireEventPlaying, fireEventPointerCancel, fireEventPointerDown, fireEventPointerMove, fireEventPointerOut, fireEventPointerOver, fireEventPointerUp, fireEventRateChange, fireEventSeeked, fireEventSelect, fireEventSubmit, fireEventSuspend, fireEventTouchCancel, fireEventTouchEnd, fireEventTouchMove, fireEventTouchStart, fireEventTransitionEnd, fireEventVolumeChange, fireEventWheel, renderComponent)
 import Record (disjointUnion)
-import Test.JSON (class ReadForeign, read)
 import Test.Event.Component (mkEventElem, mkEventImg, mkEventInput, on)
+import Test.JSON (class ReadForeign, read)
 import Test.Spec (Spec, after_, describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
+import Type.Prelude (Proxy)
 import Web.HTML (HTMLElement)
 
 spec ∷ Spec Unit
@@ -128,51 +130,52 @@ checkWithVar expected calc = do
     Just (Left broken) -> fail $ "\n\tEvent is malformed:\n\n\t" <> (printErrors broken) <> "\n"
     Just (Right actual) -> actual `shouldEqual` Just expected
 
-renderAndCheck ∷
-  ∀ t100 t119 t74 t84.
-  IsSymbol t74 =>
-  Discard t100 =>
-  Show t119 =>
-  Eq t119 =>
-  SProxy t74 ->
-  ((t84 -> Aff Unit) -> Effect (ReactComponent (Record ()))) ->
-  (t84 -> Either (NonEmptyList ForeignError) (Maybe t119)) ->
-  ( { findAllByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findAllByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findAllByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findAllByText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findAllByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
-    , findByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findByRole ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findByText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , findByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
-    , queryAllByAltText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryAllByLabelText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryAllByRole ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryAllByTestId ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryAllByText ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryAllByTitle ∷ ∀ tm. TextMatch tm => tm ->  Maybe (Array HTMLElement)
-    , queryByAltText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    , queryByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    , queryByLabelText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    , queryByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    , queryByRole ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    , queryByTestId ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    , queryByText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    , queryByTitle ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
-    } ->
-    Aff t100
-  ) ->
-  t119 -> Spec Unit
+renderAndCheck
+  ∷ ∀ t100 t119 t74 t84
+   . IsSymbol t74
+  => Discard t100
+  => Show t119
+  => Eq t119
+  => Proxy t74
+  -> ((t84 -> Aff Unit) -> Effect (ReactComponent (Record ())))
+  -> (t84 -> Either (NonEmptyList ForeignError) (Maybe t119))
+  -> ( { findAllByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findAllByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findAllByRole ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findAllByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findAllByText ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findAllByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff (Array HTMLElement)
+       , findByAltText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , findByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , findByLabelText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , findByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , findByRole ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , findByTestId ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , findByText ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , findByTitle ∷ ∀ tm. TextMatch tm => tm -> Aff HTMLElement
+       , queryAllByAltText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryAllByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryAllByLabelText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryAllByRole ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryAllByTestId ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryAllByText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryAllByTitle ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+       , queryByAltText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , queryByDisplayValue ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , queryByLabelText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , queryByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , queryByRole ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , queryByTestId ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , queryByText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , queryByTitle ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       }
+       -> Aff t100
+     )
+  -> t119
+  -> Spec Unit
 renderAndCheck event mkComp toSave check expected =
   it (reflectSymbol event) do
     var <- AVar.empty
@@ -185,14 +188,19 @@ renderAndCheck event mkComp toSave check expected =
       Left broken -> fail $ "\n\tEvent is malformed:\n\n\t" <> (printErrors broken) <> "\n"
       Right actual -> actual `shouldEqual` Just expected
 
-receivesEvent ∷
-  ∀ a props elem.
-  IsSymbol elem =>
-  Show a =>
-  Eq a =>
-  Cons elem EventHandler ( _data ∷ Object String, style ∷ CSS ) props =>
-  Lacks elem ( _data ∷ Object String, style ∷ CSS ) =>
-  ReadForeign a => (Record props -> JSX) -> SProxy elem -> (HTMLElement -> Aff Unit) -> a -> Spec Unit
+receivesEvent
+  ∷ ∀ a props elem
+   . IsSymbol elem
+  => Show a
+  => Eq a
+  => Cons elem EventHandler (_data ∷ Object String, style ∷ CSS) props
+  => Lacks elem (_data ∷ Object String, style ∷ CSS)
+  => ReadForeign a
+  => (Record props -> JSX)
+  -> Proxy elem
+  -> (HTMLElement -> Aff Unit)
+  -> a
+  -> Spec Unit
 receivesEvent elem event fire =
   renderAndCheck
     event
@@ -200,48 +208,66 @@ receivesEvent elem event fire =
     (read <<< unsafeToForeign)
     (\{ findByTestId } -> findByTestId "event-component" >>= fire)
 
-receivesEventImg ∷
-  ∀ a props props_ elem.
-  IsSymbol elem =>
-  Show a =>
-  Eq a =>
-  Cons elem EventHandler ( alt ∷ String, tabIndex ∷ Int ) props =>
-  Lacks elem ( alt ∷ String, tabIndex ∷ Int ) =>
-  Union props props_ Props_img =>
-  ReadForeign a => SProxy elem -> (HTMLElement -> Aff Unit) -> a -> Spec Unit
+receivesEventImg
+  ∷ ∀ a props props_ elem
+   . IsSymbol elem
+  => Show a
+  => Eq a
+  => Cons elem EventHandler (alt ∷ String, tabIndex ∷ Int) props
+  => Lacks elem (alt ∷ String, tabIndex ∷ Int)
+  => Union props props_ Props_img
+  => ReadForeign a
+  => Proxy elem
+  -> (HTMLElement -> Aff Unit)
+  -> a
+  -> Spec Unit
 receivesEventImg event fire =
   renderAndCheck
     event
     (mkEventImg event syntheticEvent)
-    (read <<< unsafeToForeign) \{ findByAltText } ->
-    findByAltText "event-component" >>= fire
+    (read <<< unsafeToForeign)
+    \{ findByAltText } ->
+      findByAltText "event-component" >>= fire
 
-receivesEventInput ∷
-  ∀ a props props_ elem.
-  IsSymbol elem =>
-  Show a =>
-  Eq a =>
-  Cons elem EventHandler ( children ∷ Array JSX ) props =>
-  Lacks elem ( children ∷ Array JSX ) =>
-  Union props props_ Props_div =>
-  ReadForeign a => SProxy elem -> (HTMLElement -> Aff Unit) -> a -> Spec Unit
+receivesEventInput
+  ∷ ∀ a props props_ elem
+   . IsSymbol elem
+  => Show a
+  => Eq a
+  => Cons elem EventHandler (children ∷ Array JSX) props
+  => Lacks elem (children ∷ Array JSX)
+  => Union props props_ Props_div
+  => ReadForeign a
+  => Proxy elem
+  -> (HTMLElement -> Aff Unit)
+  -> a
+  -> Spec Unit
 receivesEventInput event fire =
   renderAndCheck
     event
     (mkEventInput event syntheticEvent)
-    (read <<< unsafeToForeign) \{ findByLabelText } ->
-    findByLabelText "Input Label" >>= fire
+    (read <<< unsafeToForeign)
+    \{ findByLabelText } ->
+      findByLabelText "Input Label" >>= fire
 
-receivesEventData ∷
-  ∀ t25 t26 t39 t49.
-  IsSymbol t26 =>
-  Cons t26 EventHandler ( _data ∷ Object String, style ∷ CSS ) t25 =>
-  Lacks
-    t26
-    ( _data ∷ Object String
-    , style ∷ CSS
-    ) =>
-  Discard t39 => Show t49 => Eq t49 => (Record t25 -> JSX) -> EventFn SyntheticEvent t49 -> SProxy t26 -> (HTMLElement -> Aff t39) -> t49 -> Spec Unit
+receivesEventData
+  ∷ ∀ t25 t26 t39 t49
+   . IsSymbol t26
+  => Cons t26 EventHandler (_data ∷ Object String, style ∷ CSS) t25
+  => Lacks
+       t26
+       ( _data ∷ Object String
+       , style ∷ CSS
+       )
+  => Discard t39
+  => Show t49
+  => Eq t49
+  => (Record t25 -> JSX)
+  -> EventFn SyntheticEvent t49
+  -> Proxy t26
+  -> (HTMLElement -> Aff t39)
+  -> t49
+  -> Spec Unit
 receivesEventData elem fn event fire expected =
   it (reflectSymbol event) do
     var <- AVar.empty

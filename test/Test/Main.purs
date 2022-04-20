@@ -16,14 +16,15 @@ main = do
   specs <- discover "\\.*Spec"
   launchAff_ do
     delay (1.0 # Seconds # fromDuration)
-    runSpecT
-      config
-      [ consoleReporter ]
-      specs
-      # un Identity
+    void $
+      runSpecT
+        config
+        [ consoleReporter ]
+        specs
+        # un Identity
   where
-    config =
-      defaultConfig
-        { slow = 5.0 # Seconds # fromDuration
-        , timeout = Nothing
-        }
+  config =
+    defaultConfig
+      { slow = 5.0 # Seconds # fromDuration
+      , timeout = Nothing
+      }
