@@ -108,33 +108,10 @@ let additions =
 -------------------------------
 -}
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.15.0-20220516/packages.dhall
-        sha256:b0bf932de16a10b7d69c6bbbb31ec9ca575237c43a999fa32e59e35eb8c024a1
+      https://github.com/purescript/package-sets/releases/download/psc-0.15.0-20220522/packages.dhall
+        sha256:43895efaec7af246b60b59cfbf451cd9d3d84a5327de8c0945e2de5c9fd2fcf2
 
 in  upstream
-  with spec =
-    { repo = "https://github.com/purescript-spec/purescript-spec.git"
-    , version = "master"
-    , dependencies =
-      [ "aff"
-      , "ansi"
-      , "avar"
-      , "console"
-      , "exceptions"
-      , "foldable-traversable"
-      , "fork"
-      , "now"
-      , "pipes"
-      , "prelude"
-      , "strings"
-      , "transformers"
-      ]
-    }
-  with react-basic =
-    { dependencies = [ "prelude", "effect", "record" ]
-    , repo = "https://github.com/lumihq/purescript-react-basic.git"
-    , version = "v16.0.0"
-    }
   with react-basic-dom =
     { dependencies =
       [ "prelude"
@@ -169,10 +146,6 @@ in  upstream
     , repo = "https://github.com/lumihq/purescript-react-basic-emotion.git"
     , version = "es-modules"
     }
-  with react-basic.repo
-       =
-      "https://github.com/working-group-purescript-es/purescript-react-basic.git"
-  with react-basic.version = "es-modules"
   with react-basic-dom.repo
        =
       "https://github.com/working-group-purescript-es/purescript-react-basic-dom.git"
@@ -208,25 +181,5 @@ in  upstream
       , "web-html"
       ]
     , repo = "https://github.com/spicydonuts/purescript-react-basic-hooks.git"
-    , version = "purs-0.15-updates"
-    }
-  with run =
-    { dependencies =
-      [ "aff"
-      , "effect"
-      , "either"
-      , "free"
-      , "maybe"
-      , "newtype"
-      , "prelude"
-      , "profunctor"
-      , "tailrec"
-      , "tuples"
-      , "type-equality"
-      , "typelevel-prelude"
-      , "unsafe-coerce"
-      , "variant"
-      ]
-    , repo = "https://github.com/natefaubion/purescript-run.git"
-    , version = "v4.0.0"
+    , version = "main"
     }
