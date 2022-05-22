@@ -1,0 +1,37 @@
+{
+    "name": "purescript-react-testing-library",
+    "license": [
+        "MIT"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/i-am-the-slime/purescript-react-testing-library"
+    },
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "output"
+    ],
+    "dependencies": {
+        "purescript-aff": "^v7.0.0",
+        "purescript-aff-promise": "^v4.0.0",
+        "purescript-control": "^v6.0.0",
+        "purescript-effect": "^v4.0.0",
+        "purescript-exceptions": "^v6.0.0",
+        "purescript-foldable-traversable": "^v6.0.0",
+        "purescript-foreign": "^v7.0.0",
+        "purescript-functions": "^v6.0.0",
+        "purescript-identity": "^v6.0.0",
+        "purescript-maybe": "^v6.0.0",
+        "purescript-prelude": "^v6.0.0",
+        "purescript-react-basic": "https://github.com/working-group-purescript-es/purescript-react-basic.git#es-modules",
+        "purescript-spec": "https://github.com/purescript-spec/purescript-spec.git#master",
+        "purescript-strings": "^v6.0.0",
+        "purescript-transformers": "^v6.0.0",
+        "purescript-unsafe-coerce": "^v6.0.0",
+        "purescript-web-dom": "^v6.0.0",
+        "purescript-web-events": "^v4.0.0",
+        "purescript-web-html": "^v4.0.0"
+    }
+}
