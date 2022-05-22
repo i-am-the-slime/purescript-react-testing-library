@@ -1,28 +1,24 @@
-"use strict"
+// So that we have a "document"
+import "global-jsdom/register"
 
 // We're not using jest or any other compatible framework
-import "@testing-library/react/dont-cleanup-after-each"
-// So that we have a "document"
-import jsdomGlobal from "jsdom-global"
-jsdomGlobal(undefined, {
-  url: "https://purescript.org",
-  pretendToBeVisual: true
-})
+import "@testing-library/react/dont-cleanup-after-each.js"
 import {
   configure,
   cleanup,
   render,
   findByText,
   fireEvent
-} from "@testing-library/react/pure"
+} from "@testing-library/react/pure.js"
 import UE from "@testing-library/user-event"
 
 configure({ defaultHidden: true })
-export const cleanupImpl = cleanup
+export const cleanupImpl = () => cleanup()
 
 export const renderImpl = render
 
-export const findByTextImpl = findByText
+export const findByTextImpl = (HTMLElement, String) => () =>
+  findByText(HTMLElement, String)
 
 export function queryImpl(just) {
   return (nothing) => (query) => (elem) => {
@@ -114,4 +110,5 @@ export const fireEventPointerLeaveImpl = fireEvent.pointerLeave
 export const fireEventGotPointerCaptureImpl = fireEvent.gotPointerCapture
 export const fireEventLostPointerCaptureImpl = fireEvent.lostPointerCapture
 
-export const typeImpl = UE.type
+export const typeImpl = (HTMLElement, String, Foreign) => () =>
+  UE.type(HTMLElement, String, Foreign)

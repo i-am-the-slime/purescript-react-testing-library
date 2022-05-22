@@ -94,7 +94,8 @@ module React.TestingLibrary
   ) where
 
 import Prelude
-import Control.Promise (Promise, toAff)
+
+import Control.Promise (Promise, toAff, toAffE)
 import Control.Promise as Promise
 import Data.Function.Uncurried (Fn1, Fn2, Fn3, runFn1, runFn2, runFn3)
 import Data.Identity (Identity)
@@ -182,25 +183,25 @@ type RenderQueries =
   , queryAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
   }
 
-foreign import cleanupImpl ∷ Effect (Promise Unit)
+foreign import cleanupImpl ∷ Effect Unit
 
 cleanup ∷ Aff Unit
-cleanup = join (liftEffect (Promise.toAff <$> cleanupImpl))
+cleanup = liftEffect $ cleanupImpl
 
 --| Example use:
 --| ```purescript
 --| spec = describeComponent mkMyComponent "My Component" do
 --|  it "renders" \myComponent ->
---|    { findByText } <- renderComponent myComponent { someProp: "test text"} 
+--|    { findByText } <- renderComponent myComponent { someProp: "test text"}
 --|    result <- findByText "test text"
 --|    result `textContentShouldEqual` "I am rendering test text"
 --| ```
-describeComponent ∷
-  ∀ props.
-  (Effect (ReactComponent props)) ->
-  String ->
-  SpecT Aff (ReactComponent props) Identity Unit ->
-  Spec Unit
+describeComponent
+  ∷ ∀ props
+   . (Effect (ReactComponent props))
+  -> String
+  -> SpecT Aff (ReactComponent props) Identity Unit
+  -> Spec Unit
 describeComponent setup description test = after_ cleanup (before (liftEffect setup) (describe description test))
 
 runToAff1 ∷ ∀ a b. (a -> Promise b) -> a -> Aff b
@@ -254,10 +255,10 @@ render jsx = liftRunEffectFn1 renderImpl jsx <#> toRenderQueries
 renderComponent ∷ ∀ m p. MonadEffect m => ReactComponent { | p } -> { | p } -> m RenderQueries
 renderComponent component props = element component props # render
 
-foreign import findByTextImpl ∷ Fn2 HTMLElement String (Promise HTMLElement)
+foreign import findByTextImpl ∷ EffectFn2 HTMLElement String (Promise HTMLElement)
 
 findByText ∷ HTMLElement -> String -> Aff HTMLElement
-findByText el str = toAff (runFn2 findByTextImpl el str)
+findByText el str = toAffE (runEffectFn2 findByTextImpl el str)
 
 foreign import queryImpl ∷ ∀ a. (∀ x. x -> Maybe x) -> (∀ x. Maybe x) -> (Fn1 Foreign a) -> Foreign -> Maybe a
 
@@ -708,10 +709,10 @@ liftRunEffectFn2 ∷ ∀ m a b c. MonadEffect m => EffectFn2 a b c -> a -> b -> 
 liftRunEffectFn2 = (map >>> map >>> map) liftEffect runEffectFn2
 
 -- | User Events
-foreign import typeImpl ∷ Fn3 HTMLElement String Foreign (Promise Unit)
+foreign import typeImpl ∷ Fn3 HTMLElement String Foreign (Effect (Promise Unit))
 
 typeText ∷ String -> HTMLElement -> Aff Unit
-typeText text el = Promise.toAff $ runFn3 typeImpl el text (unsafeToForeign {})
+typeText text el = Promise.toAffE $ runFn3 typeImpl el text (unsafeToForeign {})
 
 -- | To be used for most of the getBy/findBy etc functions
 class TextMatch ∷ ∀ k. k -> Constraint
@@ -721,5 +722,6 @@ instance tmString ∷ TextMatch String
 else instance tmRegex ∷ TextMatch Regex
 else instance tmFn ∷ TextMatch (String -> Boolean)
 else instance tmInvalidType ∷
-  (Fail (Text "TextMatch must either be a String, a Regex, or String -> Boolean")) =>
+  ( Fail (Text "TextMatch must either be a String, a Regex, or String -> Boolean")
+  ) =>
   TextMatch a

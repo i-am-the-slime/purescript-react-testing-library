@@ -1,0 +1,48 @@
+let conf = ./spago.dhall
+
+in      conf
+    //  { sources = conf.sources # [ "test/**/*.purs" ]
+        , dependencies =
+              conf.dependencies
+            # [ "aff"
+              , "aff-promise"
+              , "arrays"
+              , "avar"
+              , "bifunctors"
+              , "control"
+              , "datetime"
+              , "debug"
+              , "effect"
+              , "either"
+              , "exceptions"
+              , "foldable-traversable"
+              , "foreign"
+              , "foreign-object"
+              , "functions"
+              , "identity"
+              , "integers"
+              , "lists"
+              , "maybe"
+              , "newtype"
+              , "nullable"
+              , "partial"
+              , "prelude"
+              , "react-basic"
+              , "react-basic-dom"
+              , "react-basic-hooks"
+              , "record"
+              , "remotedata"
+              , "spec"
+              , "spec-discovery"
+              , "strings"
+              , "transformers"
+              , "tuples"
+              , "typelevel-prelude"
+              , "unsafe-coerce"
+              , "variant"
+              , "web-dom"
+              , "web-events"
+              , "web-html"
+              , "yoga-json"
+              ]
+        }

@@ -14,9 +14,9 @@ import Test.Spec.Assertions.DOM (textContentShouldEqual)
 mock ∷ Ctx
 mock =
   { getUser:
-    case _ of
-      1 -> delay (2.0 # Milliseconds) $> Just "John"
-      _ -> pure $ Nothing
+      case _ of
+        1 -> delay (2.0 # Milliseconds) $> Just "John"
+        _ -> pure $ Nothing
   }
 
 spec ∷ Spec Unit

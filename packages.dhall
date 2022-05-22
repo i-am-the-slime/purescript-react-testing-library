@@ -108,8 +108,8 @@ let additions =
 -------------------------------
 -}
 let upstream =
-      https://raw.githubusercontent.com/purescript/package-sets/prepare-0.15/src/packages.dhall
-        sha256:b1c6d06132b7cbf1e93b1e5343044fba1604b50bfbe02d8f80a3002e71569c59
+      https://github.com/purescript/package-sets/releases/download/psc-0.15.0-20220516/packages.dhall
+        sha256:b0bf932de16a10b7d69c6bbbb31ec9ca575237c43a999fa32e59e35eb8c024a1
 
 in  upstream
   with spec =
@@ -209,21 +209,6 @@ in  upstream
       ]
     , repo = "https://github.com/spicydonuts/purescript-react-basic-hooks.git"
     , version = "purs-0.15-updates"
-    }
-  with variant =
-    { dependencies =
-      [ "enums"
-      , "lists"
-      , "maybe"
-      , "partial"
-      , "prelude"
-      , "record"
-      , "tuples"
-      , "unsafe-coerce"
-      ]
-    , repo =
-        "https://github.com/working-group-purescript-es/purescript-variant.git"
-    , version = "v0.15.0-update"
     }
   with run =
     { dependencies =

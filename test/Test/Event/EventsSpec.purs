@@ -23,11 +23,11 @@ import React.Basic.Events (EventFn, EventHandler, SyntheticEvent, syntheticEvent
 import React.TestingLibrary (class TextMatch, cleanup, defaultKeyboardEvent, fireEventAnimationEnd, fireEventAnimationIteration, fireEventAnimationStart, fireEventBlur, fireEventCanPlay, fireEventCanPlayThrough, fireEventClick, fireEventCompositionEnd, fireEventCompositionStart, fireEventCompositionUpdate, fireEventContextMenu, fireEventCopy, fireEventCut, fireEventDrag, fireEventDragEnd, fireEventDragEnter, fireEventDragExit, fireEventDragLeave, fireEventDragOver, fireEventDragStart, fireEventDrop, fireEventEmptied, fireEventEnded, fireEventFocus, fireEventInvalid, fireEventKeyDown, fireEventKeyUp, fireEventLoad, fireEventLoadedMetadata, fireEventMouseDown, fireEventMouseEnter, fireEventMouseLeave, fireEventMouseMove, fireEventMouseOut, fireEventMouseOver, fireEventMouseUp, fireEventPaste, fireEventPause, fireEventPlaying, fireEventPointerCancel, fireEventPointerDown, fireEventPointerMove, fireEventPointerOut, fireEventPointerOver, fireEventPointerUp, fireEventRateChange, fireEventSeeked, fireEventSelect, fireEventSubmit, fireEventSuspend, fireEventTouchCancel, fireEventTouchEnd, fireEventTouchMove, fireEventTouchStart, fireEventTransitionEnd, fireEventVolumeChange, fireEventWheel, renderComponent)
 import Record (disjointUnion)
 import Test.Event.Component (mkEventElem, mkEventImg, mkEventInput, on)
-import Test.JSON (class ReadForeign, read)
 import Test.Spec (Spec, after_, describe, it)
 import Test.Spec.Assertions (fail, shouldEqual)
 import Type.Prelude (Proxy)
 import Web.HTML (HTMLElement)
+import Yoga.JSON (class ReadForeign, read)
 
 spec ∷ Spec Unit
 spec =

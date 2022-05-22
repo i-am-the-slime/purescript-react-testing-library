@@ -1,10 +1,17 @@
 # Purescript React Testing Library
 
-This are purescript wrappers for [react-testing-library](https://github.com/testing-library/react-testing-library).
+PureScript wrappers for [react-testing-library](https://github.com/testing-library/react-testing-library).
+
+# Changelog
+
+## `4.0.0`
+
+Switched from `jsdom-global` to `global-jsdom`
 
 ## First install the node packages
+
 ```
-npm install --save-dev @testing-library/react @testing-library/user-event jsdom jsdom-global
+npm install --save-dev @testing-library/react @testing-library/user-event jsdom global-jsdom
 ```
 
 ## Example
