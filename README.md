@@ -4,6 +4,10 @@ PureScript wrappers for [react-testing-library](https://github.com/testing-libra
 
 # Changelog
 
+## `4.0.1`
+
+Add rerender
+
 ## `4.0.0`
 
 Switched from `jsdom-global` to `global-jsdom`

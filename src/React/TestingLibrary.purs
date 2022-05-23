@@ -91,8 +91,7 @@ module React.TestingLibrary
   , render
   , renderComponent
   , typeText
-  )
-  where
+  ) where
 
 import Prelude
 
@@ -209,9 +208,6 @@ describeComponent setup description test = after_ cleanup (before (liftEffect se
 
 runToAff1 ∷ ∀ a b. (a -> Promise b) -> a -> Aff b
 runToAff1 = map toAff <$> runFn1
-
--- runToAff2 ∷ ∀ a c b. Fn2 a b (Promise c) -> a -> b -> Aff c
--- runToAff2 = (map >>> map) toAff <$> runFn2
 
 toRenderQueries ∷ RenderQueriesJS -> RenderQueries
 toRenderQueries rq =
