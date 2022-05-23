@@ -6,7 +6,7 @@ PureScript wrappers for [react-testing-library](https://github.com/testing-libra
 
 ## `4.0.1`
 
-Add rerender
+Add `rerender`
 
 ## `4.0.0`
 
