@@ -1,9 +1,10 @@
 module React.TestingLibrary
-  ( cleanup
+  ( FakeKeyboardEvent
+  , RenderQueries
   , class TextMatch
+  , cleanup
   , defaultKeyboardEvent
   , describeComponent
-  , FakeKeyboardEvent
   , findByText
   , fireEvent
   , fireEventAbort
@@ -39,17 +40,17 @@ module React.TestingLibrary
   , fireEventFocus
   , fireEventFocusIn
   , fireEventFocusOut
-  -- , fireEventGotPointerCapture -- No support in jsdom https://github.com/jsdom/jsdom/search?q=pointercapture&unscoped_q=pointercapture
+  , fireEventGotPointerCapture
   , fireEventInput
   , fireEventInvalid
   , fireEventKeyDown
   , fireEventKeyPress
   , fireEventKeyUp
   , fireEventLoad
+  , fireEventLoadStart
   , fireEventLoadedData
   , fireEventLoadedMetadata
-  , fireEventLoadStart
-  -- , fireEventLostPointerCapture -- No support in jsdom https://github.com/jsdom/jsdom/search?q=pointercapture&unscoped_q=pointercapture
+  , fireEventLostPointerCapture
   , fireEventMouseDown
   , fireEventMouseEnter
   , fireEventMouseLeave
@@ -63,8 +64,8 @@ module React.TestingLibrary
   , fireEventPlaying
   , fireEventPointerCancel
   , fireEventPointerDown
-  -- , fireEventPointerEnter -- No support in jsdom: https://github.com/jsdom/jsdom/search?q=pointerenter&unscoped_q=pointerenter
-  -- , fireEventPointerLeave -- No support in jsdom: https://github.com/jsdom/jsdom/search?q=pointerleave&unscoped_q=pointerleave
+  , fireEventPointerEnter
+  , fireEventPointerLeave
   , fireEventPointerMove
   , fireEventPointerOut
   , fireEventPointerOver
@@ -89,15 +90,15 @@ module React.TestingLibrary
   , fireEventWheel
   , render
   , renderComponent
-  , RenderQueries
   , typeText
-  ) where
+  )
+  where
 
 import Prelude
 
 import Control.Promise (Promise, toAff, toAffE)
 import Control.Promise as Promise
-import Data.Function.Uncurried (Fn1, Fn2, Fn3, runFn1, runFn2, runFn3)
+import Data.Function.Uncurried (Fn1, Fn3, runFn1, runFn3)
 import Data.Identity (Identity)
 import Data.Maybe (Maybe(..))
 import Data.String.Regex (Regex)
@@ -146,6 +147,7 @@ type RenderQueriesJS =
   , queryAllByRole ∷ Fn1 Foreign (Array HTMLElement)
   , queryByPlaceholderText ∷ Fn1 Foreign HTMLElement
   , queryAllByPlaceholderText ∷ Fn1 Foreign (Array HTMLElement)
+  , rerender ∷ EffectFn1 JSX Unit
   }
 
 type RenderQueries =
@@ -181,6 +183,7 @@ type RenderQueries =
   , queryAllByRole ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
   , queryByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
   , queryAllByPlaceholderText ∷ ∀ tm. TextMatch tm => tm -> Maybe (Array HTMLElement)
+  , rerender ∷ ∀ m. MonadEffect m => JSX -> m Unit
   }
 
 foreign import cleanupImpl ∷ Effect Unit
@@ -207,8 +210,8 @@ describeComponent setup description test = after_ cleanup (before (liftEffect se
 runToAff1 ∷ ∀ a b. (a -> Promise b) -> a -> Aff b
 runToAff1 = map toAff <$> runFn1
 
-runToAff2 ∷ ∀ a c b. Fn2 a b (Promise c) -> a -> b -> Aff c
-runToAff2 = (map >>> map) toAff <$> runFn2
+-- runToAff2 ∷ ∀ a c b. Fn2 a b (Promise c) -> a -> b -> Aff c
+-- runToAff2 = (map >>> map) toAff <$> runFn2
 
 toRenderQueries ∷ RenderQueriesJS -> RenderQueries
 toRenderQueries rq =
@@ -244,6 +247,7 @@ toRenderQueries rq =
   , queryAllByRole: map unsafeCoerce runFn1 (query rq.queryAllByRole)
   , queryByPlaceholderText: map unsafeCoerce runFn1 (query rq.queryByPlaceholderText)
   , queryAllByPlaceholderText: map unsafeCoerce runFn1 (query rq.queryAllByPlaceholderText)
+  , rerender: liftRunEffectFn1 rq.rerender
   }
 
 foreign import renderImpl ∷ EffectFn1 JSX RenderQueriesJS

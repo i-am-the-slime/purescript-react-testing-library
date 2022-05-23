@@ -11,7 +11,7 @@ import Effect (Effect)
 import Effect.AVar (AVar)
 import Effect.Aff (Aff)
 import Effect.Aff.AVar as AVar
-import Effect.Class (liftEffect)
+import Effect.Class (class MonadEffect, liftEffect)
 import Foreign (ForeignError(..), MultipleErrors, unsafeToForeign)
 import Foreign.Object (Object)
 import Prim.Row (class Cons, class Lacks, class Union)
@@ -123,7 +123,7 @@ spec =
 checkWithVar ∷ ∀ a b. Show a => Eq a => a -> (AVar (Either (NonEmptyList ForeignError) (Maybe a)) -> Aff b) -> Aff Unit
 checkWithVar expected calc = do
   var <- AVar.empty
-  comp <- calc var
+  _comp <- calc var
   result <- AVar.tryRead var
   case result of
     Nothing -> fail $ "\tVariable not written\n\n"
@@ -171,6 +171,7 @@ renderAndCheck
        , queryByTestId ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
        , queryByText ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
        , queryByTitle ∷ ∀ tm. TextMatch tm => tm -> Maybe HTMLElement
+       , rerender ∷ ∀ m. MonadEffect m => JSX -> m Unit
        }
        -> Aff t100
      )
