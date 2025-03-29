@@ -15,13 +15,12 @@ import React.Basic.Events (handler, handler_)
 import React.Basic.Hooks (JSX, ReactChildren, ReactComponent, ReactContext, fragment, provider, reactChildrenToArray, reactComponent, reactComponentWithChildren, useContext, useState, (/\))
 import React.Basic.Hooks as React
 
-type Ctx
-  = { getUser ∷ Int -> Aff (Maybe String) }
+type Ctx = { getUser ∷ Int -> Aff (Maybe String) }
 
-mkProvider ∷
-  ReactContext Ctx ->
-  Ctx ->
-  Effect (ReactComponent { children ∷ ReactChildren JSX })
+mkProvider
+  ∷ ReactContext Ctx
+  -> Ctx
+  -> Effect (ReactComponent { children ∷ ReactChildren JSX })
 mkProvider context interpreter = do
   reactComponentWithChildren "Provider" \{ children } -> React.do
     pure $ provider context interpreter (reactChildrenToArray children)
@@ -58,16 +57,16 @@ mkAjaxRecord ctx = do
           , R.label
               { htmlFor: "get-user-button"
               , children:
-                [ R.text "Get User" ]
+                  [ R.text "Get User" ]
               }
           , R.div
               { _data: fromHomogeneous { testid: "userId" }
               , children:
-                [ R.text case remoteUserId of
-                    RD.NotAsked -> ""
-                    RD.Loading -> "Loading..."
-                    RD.Failure e -> e
-                    RD.Success s -> s
-                ]
+                  [ R.text case remoteUserId of
+                      RD.NotAsked -> ""
+                      RD.Loading -> "Loading..."
+                      RD.Failure e -> e
+                      RD.Success s -> s
+                  ]
               }
           ]

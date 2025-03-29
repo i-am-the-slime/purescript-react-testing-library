@@ -12,8 +12,7 @@ import React.Basic.Events (handler_)
 import React.Basic.Hooks (ReactComponent, reactComponent, fragment, useState, (/\))
 import React.Basic.Hooks as React
 
-type GetUserId
-  = Aff (Maybe Int)
+type GetUserId = Aff (Maybe Int)
 
 mkAjaxSimple ∷ GetUserId -> Effect (ReactComponent {})
 mkAjaxSimple getUserId = do
@@ -33,7 +32,7 @@ mkAjaxSimple getUserId = do
           , R.label
               { htmlFor: "get-user-button"
               , children:
-                [ R.text "Get User" ]
+                  [ R.text "Get User" ]
               }
           , maybeUserId
               # foldMap \userId ->

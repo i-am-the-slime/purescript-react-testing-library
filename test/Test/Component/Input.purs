@@ -24,6 +24,6 @@ mkInput = do
           , R.label
               { htmlFor: "basic-input"
               , children:
-                [ R.text "Some input" ]
+                  [ R.text "Some input" ]
               }
           ]

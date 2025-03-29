@@ -15,20 +15,23 @@ spec =
   after_ cleanup
     $ before setup
     $ describe
-        "A simple input" do
-        it
-          "renders without errors" \inp -> do
-          { findByLabelText } <- renderComponent inp {}
-          elem <- findByLabelText "Some input"
-          elem `textContentShouldEqual` ""
-        it
-          "sets text when typed" \inp -> do
-          { findByLabelText } <- renderComponent inp {}
-          elem <- findByLabelText "Some input"
-          elem `textContentShouldEqual` ""
-          focus elem # liftEffect
-          typeText "Dornenvögel" elem
-          elem `valueShouldEqual` "Dornenvögel"
+        "A simple input"
+        do
+          it
+            "renders without errors"
+            \inp -> do
+              { findByLabelText } <- renderComponent inp {}
+              elem <- findByLabelText "Some input"
+              elem `textContentShouldEqual` ""
+          it
+            "sets text when typed"
+            \inp -> do
+              { findByLabelText } <- renderComponent inp {}
+              elem <- findByLabelText "Some input"
+              elem `textContentShouldEqual` ""
+              focus elem # liftEffect
+              typeText "Dornenvögel" elem
+              elem `valueShouldEqual` "Dornenvögel"
 
 setup ∷ Aff (ReactComponent {})
 setup = mkInput # liftEffect
