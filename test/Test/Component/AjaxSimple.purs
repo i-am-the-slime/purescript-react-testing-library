@@ -17,7 +17,7 @@ type GetUserId
 
 mkAjaxSimple ∷ GetUserId -> Effect (ReactComponent {})
 mkAjaxSimple getUserId = do
-  reactComponent "Ajax" \props -> React.do
+  reactComponent "Ajax" \_props -> React.do
     maybeUserId /\ setUserId <- useState Nothing
     let
       getAndSetUser = do

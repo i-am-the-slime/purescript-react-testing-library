@@ -1,0 +1,86 @@
+package:
+  publish:
+    license: MIT
+    version: 1.0.0
+    location:
+      githubOwner: i-am-the-slime
+      githubRepo: purescript-react-testing-library
+  dependencies:
+    - aff
+    - aff-promise
+    - control
+    - effect
+    - exceptions
+    - foldable-traversable
+    - foreign
+    - functions
+    - identity
+    - maybe
+    - prelude
+    - react-basic
+    - spec
+    - strings
+    - transformers
+    - unsafe-coerce
+    - web-dom
+    - web-events
+    - web-html
+  name: react-testing-library
+  test:
+    main: Test.Main
+    dependencies:
+      - aff-promise
+      - arrays
+      - avar
+      - control
+      - datetime
+      - effect
+      - either
+      - exceptions
+      - foldable-traversable
+      - foreign
+      - foreign-object
+      - functions
+      - identity
+      - integers
+      - lists
+      - maybe
+      - newtype
+      - prelude
+      - react-basic
+      - react-basic-dom
+      - react-basic-hooks
+      - record
+      - refs
+      - remotedata
+      - spec
+      - spec-discovery
+      - strings
+      - transformers
+      - tuples
+      - typelevel-prelude
+      - unsafe-coerce
+      - web-dom
+      - web-events
+      - web-html
+      - yoga-json
+workspace:
+  extraPackages:
+    react-basic:
+      # git: https://github.com/purescript-react/purescript-react-basic.git
+      # ref: master
+      path: /home/srghma/projects/purescript-react-basic
+    react-basic-dom:
+      # git: https://github.com/purescript-react/purescript-react-basic-dom.git
+      # ref: master
+      path: /home/srghma/projects/purescript-react-basic-dom
+    react-basic-emotion:
+      # git: https://github.com/purescript-react/purescript-react-basic-emotion.git
+      # ref: master
+      path: /home/srghma/projects/purescript-react-basic-emotion
+    react-basic-hooks:
+      # git: https://github.com/purescript-react/purescript-react-basic-hooks.git
+      # ref: master
+      path: /home/srghma/projects/purescript-react-basic-hooks
+  packageSet:
+    registry: 63.6.0

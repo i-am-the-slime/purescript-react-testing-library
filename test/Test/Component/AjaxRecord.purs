@@ -28,7 +28,7 @@ mkProvider context interpreter = do
 
 mkAjaxRecord ∷ ReactContext Ctx -> Effect (ReactComponent {})
 mkAjaxRecord ctx = do
-  reactComponent "Ajax" \props -> React.do
+  reactComponent "Ajax" \_props -> React.do
     remoteUserId /\ modifyUserId <- useState RD.NotAsked
     inputText /\ updateInputText <- useState Nothing
     { getUser } <- useContext ctx

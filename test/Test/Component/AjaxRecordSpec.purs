@@ -45,7 +45,8 @@ spec =
                 fireEventInput input "1"
                 fireEventClick button
                 userId `textContentShouldEqual` "Loading..."
-                delay $ 2.0 # Milliseconds
+                -- NOTE(srghma): on my computer 2.0 and 3.0 didnt work, but 4.0 - did sometimes, so I put big value just in case
+                delay $ 200.0 # Milliseconds
                 userId `textContentShouldEqual` "John"
           it "shows not found for non-existing values"
             $ \{ input, button, userId } -> do
