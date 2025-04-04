@@ -10,7 +10,7 @@ import React.Basic.Hooks as React
 
 mkTags ∷ Effect (ReactComponent {})
 mkTags = do
-  reactComponent "Tags" \props -> React.do
+  reactComponent "Tags" \_props -> React.do
     tags /\ setTags <- useState [ "1", "2", "3" ]
     pure
       $ R.div_

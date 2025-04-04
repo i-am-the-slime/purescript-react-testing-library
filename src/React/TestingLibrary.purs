@@ -2,6 +2,7 @@ module React.TestingLibrary
   ( FakeKeyboardEvent
   , RenderQueries
   , class TextMatch
+  , textMatchToForeign
   , cleanup
   , defaultKeyboardEvent
   , describeComponent
@@ -91,20 +92,23 @@ module React.TestingLibrary
   , render
   , renderComponent
   , typeText
+  , typeText'
   ) where
 
 import Prelude
 
 import Control.Promise (Promise, toAff, toAffE)
 import Control.Promise as Promise
-import Data.Function.Uncurried (Fn1, Fn3, runFn1, runFn3)
+import Data.Function.Uncurried (Fn2, runFn2)
 import Data.Identity (Identity)
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe)
+import Data.Nullable (Nullable, toMaybe)
+import Data.Nullable as Nullable
 import Data.String.Regex (Regex)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (class MonadEffect, liftEffect)
-import Effect.Uncurried (EffectFn1, EffectFn2, runEffectFn1, runEffectFn2)
+import Effect.Uncurried (EffectFn1, EffectFn2, EffectFn3, runEffectFn1, runEffectFn2, runEffectFn3)
 import Foreign (Foreign, unsafeToForeign)
 import Prim.TypeError (class Fail, Text)
 import React.Basic (JSX, ReactComponent, element)
@@ -114,38 +118,38 @@ import Web.Event.Internal.Types (Event)
 import Web.HTML (HTMLElement)
 
 type RenderQueriesJS =
-  { findByLabelText ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByLabelText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , findByTestId ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByTestId ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , findByAltText ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByAltText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , findByText ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , findByTitle ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByTitle ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , findByDisplayValue ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByDisplayValue ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , findByRole ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByRole ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , findByPlaceholderText ∷ Fn1 Foreign (Promise HTMLElement)
-  , findAllByPlaceholderText ∷ Fn1 Foreign (Promise (Array HTMLElement))
-  , queryByLabelText ∷ Fn1 Foreign HTMLElement
-  , queryAllByLabelText ∷ Fn1 Foreign (Array HTMLElement)
-  , queryByTestId ∷ Fn1 Foreign HTMLElement
-  , queryAllByTestId ∷ Fn1 Foreign (Array HTMLElement)
-  , queryByAltText ∷ Fn1 Foreign HTMLElement
-  , queryAllByAltText ∷ Fn1 Foreign (Array HTMLElement)
-  , queryByText ∷ Fn1 Foreign HTMLElement
-  , queryAllByText ∷ Fn1 Foreign (Array HTMLElement)
-  , queryByTitle ∷ Fn1 Foreign HTMLElement
-  , queryAllByTitle ∷ Fn1 Foreign (Array HTMLElement)
-  , queryByDisplayValue ∷ Fn1 Foreign HTMLElement
-  , queryAllByDisplayValue ∷ Fn1 Foreign (Array HTMLElement)
-  , queryByRole ∷ Fn1 Foreign HTMLElement
-  , queryAllByRole ∷ Fn1 Foreign (Array HTMLElement)
-  , queryByPlaceholderText ∷ Fn1 Foreign HTMLElement
-  , queryAllByPlaceholderText ∷ Fn1 Foreign (Array HTMLElement)
+  { findByLabelText ∷ Foreign -> Promise HTMLElement
+  , findAllByLabelText ∷ Foreign -> Promise (Array HTMLElement)
+  , findByTestId ∷ Foreign -> Promise HTMLElement
+  , findAllByTestId ∷ Foreign -> Promise (Array HTMLElement)
+  , findByAltText ∷ Foreign -> Promise HTMLElement
+  , findAllByAltText ∷ Foreign -> Promise (Array HTMLElement)
+  , findByText ∷ Foreign -> Promise HTMLElement
+  , findAllByText ∷ Foreign -> Promise (Array HTMLElement)
+  , findByTitle ∷ Foreign -> Promise HTMLElement
+  , findAllByTitle ∷ Foreign -> Promise (Array HTMLElement)
+  , findByDisplayValue ∷ Foreign -> Promise HTMLElement
+  , findAllByDisplayValue ∷ Foreign -> Promise (Array HTMLElement)
+  , findByRole ∷ Foreign -> Promise HTMLElement
+  , findAllByRole ∷ Foreign -> Promise (Array HTMLElement)
+  , findByPlaceholderText ∷ Foreign -> Promise HTMLElement
+  , findAllByPlaceholderText ∷ Foreign -> Promise (Array HTMLElement)
+  , queryByLabelText ∷ Foreign -> Nullable HTMLElement
+  , queryAllByLabelText ∷ Foreign -> Nullable (Array HTMLElement)
+  , queryByTestId ∷ Foreign -> Nullable (HTMLElement)
+  , queryAllByTestId ∷ Foreign -> Nullable (Array HTMLElement)
+  , queryByAltText ∷ Foreign -> Nullable (HTMLElement)
+  , queryAllByAltText ∷ Foreign -> Nullable (Array HTMLElement)
+  , queryByText ∷ Foreign -> Nullable (HTMLElement)
+  , queryAllByText ∷ Foreign -> Nullable (Array HTMLElement)
+  , queryByTitle ∷ Foreign -> Nullable (HTMLElement)
+  , queryAllByTitle ∷ Foreign -> Nullable (Array HTMLElement)
+  , queryByDisplayValue ∷ Foreign -> Nullable (HTMLElement)
+  , queryAllByDisplayValue ∷ Foreign -> Nullable (Array HTMLElement)
+  , queryByRole ∷ Foreign -> Nullable (HTMLElement)
+  , queryAllByRole ∷ Foreign -> Nullable (Array HTMLElement)
+  , queryByPlaceholderText ∷ Foreign -> Nullable (HTMLElement)
+  , queryAllByPlaceholderText ∷ Foreign -> Nullable (Array HTMLElement)
   , rerender ∷ EffectFn1 JSX Unit
   }
 
@@ -207,42 +211,43 @@ describeComponent
 describeComponent setup description test = after_ cleanup (before (liftEffect setup) (describe description test))
 
 runToAff1 ∷ ∀ a b. (a -> Promise b) -> a -> Aff b
-runToAff1 = map toAff <$> runFn1
+runToAff1 = map toAff
 
+-- https://testing-library.com/docs/queries/about/#types-of-queries
 toRenderQueries ∷ RenderQueriesJS -> RenderQueries
 toRenderQueries rq =
-  { findByLabelText: map unsafeCoerce runToAff1 rq.findByLabelText
-  , findAllByLabelText: map unsafeCoerce runToAff1 rq.findAllByLabelText
-  , findByTestId: map unsafeCoerce runToAff1 rq.findByTestId
-  , findAllByTestId: map unsafeCoerce runToAff1 rq.findAllByTestId
-  , findByAltText: map unsafeCoerce runToAff1 rq.findByAltText
-  , findAllByAltText: map unsafeCoerce runToAff1 rq.findAllByAltText
-  , findByText: map unsafeCoerce runToAff1 rq.findByText
-  , findAllByText: map unsafeCoerce runToAff1 rq.findAllByText
-  , findByTitle: map unsafeCoerce runToAff1 rq.findByTitle
-  , findAllByTitle: map unsafeCoerce runToAff1 rq.findAllByTitle
-  , findByDisplayValue: map unsafeCoerce runToAff1 rq.findByDisplayValue
-  , findAllByDisplayValue: map unsafeCoerce runToAff1 rq.findAllByDisplayValue
-  , findByRole: map unsafeCoerce runToAff1 rq.findByRole
-  , findAllByRole: map unsafeCoerce runToAff1 rq.findAllByRole
-  , findByPlaceholderText: map unsafeCoerce runToAff1 rq.findByPlaceholderText
-  , findAllByPlaceholderText: map unsafeCoerce runToAff1 rq.findAllByPlaceholderText
-  , queryByLabelText: map unsafeCoerce runFn1 (query rq.queryByLabelText)
-  , queryAllByLabelText: map unsafeCoerce runFn1 (query rq.queryAllByLabelText)
-  , queryByTestId: map unsafeCoerce runFn1 (query rq.queryByTestId)
-  , queryAllByTestId: map unsafeCoerce runFn1 (query rq.queryAllByTestId)
-  , queryByAltText: map unsafeCoerce runFn1 (query rq.queryByAltText)
-  , queryAllByAltText: map unsafeCoerce runFn1 (query rq.queryAllByAltText)
-  , queryByText: map unsafeCoerce runFn1 (query rq.queryByText)
-  , queryAllByText: map unsafeCoerce runFn1 (query rq.queryAllByText)
-  , queryByTitle: map unsafeCoerce runFn1 (query rq.queryByTitle)
-  , queryAllByTitle: map unsafeCoerce runFn1 (query rq.queryAllByTitle)
-  , queryByDisplayValue: map unsafeCoerce runFn1 (query rq.queryByDisplayValue)
-  , queryAllByDisplayValue: map unsafeCoerce runFn1 (query rq.queryAllByDisplayValue)
-  , queryByRole: map unsafeCoerce runFn1 (query rq.queryByRole)
-  , queryAllByRole: map unsafeCoerce runFn1 (query rq.queryAllByRole)
-  , queryByPlaceholderText: map unsafeCoerce runFn1 (query rq.queryByPlaceholderText)
-  , queryAllByPlaceholderText: map unsafeCoerce runFn1 (query rq.queryAllByPlaceholderText)
+  { findByLabelText: textMatchToForeign >>> runToAff1 rq.findByLabelText
+  , findAllByLabelText: textMatchToForeign >>> runToAff1 rq.findAllByLabelText
+  , findByTestId: textMatchToForeign >>> runToAff1 rq.findByTestId
+  , findAllByTestId: textMatchToForeign >>> runToAff1 rq.findAllByTestId
+  , findByAltText: textMatchToForeign >>> runToAff1 rq.findByAltText
+  , findAllByAltText: textMatchToForeign >>> runToAff1 rq.findAllByAltText
+  , findByText: textMatchToForeign >>> runToAff1 rq.findByText
+  , findAllByText: textMatchToForeign >>> runToAff1 rq.findAllByText
+  , findByTitle: textMatchToForeign >>> runToAff1 rq.findByTitle
+  , findAllByTitle: textMatchToForeign >>> runToAff1 rq.findAllByTitle
+  , findByDisplayValue: textMatchToForeign >>> runToAff1 rq.findByDisplayValue
+  , findAllByDisplayValue: textMatchToForeign >>> runToAff1 rq.findAllByDisplayValue
+  , findByRole: textMatchToForeign >>> runToAff1 rq.findByRole
+  , findAllByRole: textMatchToForeign >>> runToAff1 rq.findAllByRole
+  , findByPlaceholderText: textMatchToForeign >>> runToAff1 rq.findByPlaceholderText
+  , findAllByPlaceholderText: textMatchToForeign >>> runToAff1 rq.findAllByPlaceholderText
+  , queryByLabelText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByLabelText)
+  , queryAllByLabelText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByLabelText)
+  , queryByTestId: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByTestId)
+  , queryAllByTestId: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByTestId)
+  , queryByAltText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByAltText)
+  , queryAllByAltText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByAltText)
+  , queryByText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByText)
+  , queryAllByText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByText)
+  , queryByTitle: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByTitle)
+  , queryAllByTitle: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByTitle)
+  , queryByDisplayValue: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByDisplayValue)
+  , queryAllByDisplayValue: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByDisplayValue)
+  , queryByRole: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByRole)
+  , queryAllByRole: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByRole)
+  , queryByPlaceholderText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryByPlaceholderText)
+  , queryAllByPlaceholderText: textMatchToForeign >>> (map Nullable.toMaybe rq.queryAllByPlaceholderText)
   , rerender: liftRunEffectFn1 rq.rerender
   }
 
@@ -259,11 +264,6 @@ foreign import findByTextImpl ∷ EffectFn2 HTMLElement String (Promise HTMLElem
 
 findByText ∷ HTMLElement -> String -> Aff HTMLElement
 findByText el str = toAffE (runEffectFn2 findByTextImpl el str)
-
-foreign import queryImpl ∷ ∀ a. (∀ x. x -> Maybe x) -> (∀ x. Maybe x) -> (Fn1 Foreign a) -> Foreign -> Maybe a
-
-query ∷ ∀ a. (Fn1 Foreign a) -> Foreign -> Maybe a
-query = queryImpl Just Nothing
 
 foreign import fireEventImpl ∷ EffectFn2 HTMLElement Event Unit
 
@@ -709,19 +709,26 @@ liftRunEffectFn2 ∷ ∀ m a b c. MonadEffect m => EffectFn2 a b c -> a -> b -> 
 liftRunEffectFn2 = (map >>> map >>> map) liftEffect runEffectFn2
 
 -- | User Events
-foreign import typeImpl ∷ Fn3 HTMLElement String Foreign (Effect (Promise Unit))
+foreign import typeImpl ∷ EffectFn2 HTMLElement String (Promise Unit)
+
+typeWithOptionsImpl ∷ EffectFn3 HTMLElement String { initialSelectionStart :: Int, initialSelectionEnd :: Int } (Promise Unit)
+typeWithOptionsImpl = unsafeCoerce typeImpl
 
 typeText ∷ String -> HTMLElement -> Aff Unit
-typeText text el = Promise.toAffE $ runFn3 typeImpl el text (unsafeToForeign {})
+typeText text el = Promise.toAffE $ runEffectFn2 typeImpl el text
+
+typeText' ∷ String -> HTMLElement -> { initialSelectionStart :: Int, initialSelectionEnd :: Int } -> Aff Unit
+typeText' text el options = Promise.toAffE $ runEffectFn3 typeWithOptionsImpl el text options
 
 -- | To be used for most of the getBy/findBy etc functions
-class TextMatch ∷ ∀ k. k -> Constraint
-class TextMatch a
+class TextMatch a where
+  textMatchToForeign :: a -> Foreign
 
-instance tmString ∷ TextMatch String
-else instance tmRegex ∷ TextMatch Regex
-else instance tmFn ∷ TextMatch (String -> Boolean)
-else instance tmInvalidType ∷
-  ( Fail (Text "TextMatch must either be a String, a Regex, or String -> Boolean")
-  ) =>
-  TextMatch a
+instance TextMatch String where
+  textMatchToForeign = unsafeToForeign
+
+instance TextMatch Regex where
+  textMatchToForeign = unsafeToForeign
+
+instance TextMatch (String -> Boolean) where
+  textMatchToForeign = unsafeToForeign

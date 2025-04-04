@@ -11,7 +11,7 @@ import React.Basic.Hooks as React
 
 mkInput ∷ Effect (ReactComponent {})
 mkInput = do
-  reactComponent "Input" \props -> React.do
+  reactComponent "Input" \_props -> React.do
     text /\ setText <- useState ""
     pure
       $ fragment
@@ -24,6 +24,6 @@ mkInput = do
           , R.label
               { htmlFor: "basic-input"
               , children:
-                [ R.text "Some input" ]
+                  [ R.text "Some input" ]
               }
           ]

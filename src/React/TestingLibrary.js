@@ -5,26 +5,22 @@ import "global-jsdom/register"
 import "@testing-library/react/dont-cleanup-after-each.js"
 import {
   configure,
-  cleanup,
-  render,
-  findByText,
-  fireEvent
+  fireEvent,
 } from "@testing-library/react/pure.js"
-import UE from "@testing-library/user-event"
 
 configure({ defaultHidden: true })
-export const cleanupImpl = () => cleanup()
 
-export const renderImpl = render
+export {
+  render as renderImpl,
+  cleanup as cleanupImpl,
+  findByText as findByTextImpl,
+} from "@testing-library/react/pure.js"
 
-export const findByTextImpl = (HTMLElement, String) => () =>
-  findByText(HTMLElement, String)
+import userEvent from "@testing-library/user-event"
 
-export function queryImpl(just) {
-  return (nothing) => (query) => (elem) => {
-    let result = query(elem)
-    return result === null ? nothing : just(result)
-  }
+export function queryImpl(just, nothing, query, elem) {
+  const result = query(elem)
+  return result === null ? nothing : just(result)
 }
 
 export const fireEventImpl = fireEvent
@@ -110,5 +106,4 @@ export const fireEventPointerLeaveImpl = fireEvent.pointerLeave
 export const fireEventGotPointerCaptureImpl = fireEvent.gotPointerCapture
 export const fireEventLostPointerCaptureImpl = fireEvent.lostPointerCapture
 
-export const typeImpl = (HTMLElement, String, Foreign) => () =>
-  UE.type(HTMLElement, String, Foreign)
+export const typeImpl = userEvent.type

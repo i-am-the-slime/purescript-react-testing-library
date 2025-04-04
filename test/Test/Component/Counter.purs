@@ -24,6 +24,6 @@ mkCounter = do
           , R.label
               { htmlFor: "basic-counter"
               , children:
-                [ R.text "A simple counter" ]
+                  [ R.text "A simple counter" ]
               }
           ]
