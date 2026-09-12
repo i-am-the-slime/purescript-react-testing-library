@@ -1,28 +1,34 @@
 package:
   name: react-testing-library
   dependencies:
-    - aff
-    - aff-promise
-    - control
-    - effect
-    - exceptions
-    - foldable-traversable
-    - foreign
-    - functions
-    - identity
-    - maybe
-    - prelude
-    - react-basic
-    - spec
-    - strings
-    - transformers
-    - unsafe-coerce
-    - web-dom
-    - web-events
-    - web-html
+    - aff: ">=8.0.0 <9.0.0"
+    - aff-promise: ">=4.0.0 <5.0.0"
+    - control: ">=6.0.0 <7.0.0"
+    - effect: ">=4.0.0 <5.0.0"
+    - exceptions: ">=6.1.0 <7.0.0"
+    - foldable-traversable: ">=6.0.0 <7.0.0"
+    - foreign: ">=7.0.0 <8.0.0"
+    - functions: ">=6.0.0 <7.0.0"
+    - identity: ">=6.0.0 <7.0.0"
+    - maybe: ">=6.0.0 <7.0.0"
+    - prelude: ">=6.0.2 <7.0.0"
+    - react-basic: ">=17.0.0 <18.0.0"
+    - spec: ">=8.1.2 <9.0.0"
+    - strings: ">=6.0.1 <7.0.0"
+    - transformers: ">=6.1.0 <7.0.0"
+    - unsafe-coerce: ">=6.0.0 <7.0.0"
+    - web-dom: ">=6.0.0 <7.0.0"
+    - web-events: ">=4.0.0 <5.0.0"
+    - web-html: ">=4.1.1 <5.0.0"
   publish:
-    version: 1.0.0
+    version: 4.1.0
     license: MIT
+    include:
+      - package.json
+      - LICENSE
     location:
       githubOwner: i-am-the-slime
       githubRepo: purescript-react-testing-library
+workspace:
+  packageSet:
+    registry: 77.3.1
